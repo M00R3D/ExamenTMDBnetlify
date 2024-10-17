@@ -124,7 +124,7 @@
       },
       methods: {
         fetchMovies(category, endpoint) {
-          const apiKey = '06524ff7325ce43f515a20c7b39d58a7'; // Inserta tu API Key de TMDb aquí
+          const apiKey = '06524ff7325ce43f515a20c7b39d58a7'; 
           axios.get(`https://api.themoviedb.org/3${endpoint}?api_key=${apiKey}&language=es`)
             .then(response => {
               this.movies[category] = response.data.results;

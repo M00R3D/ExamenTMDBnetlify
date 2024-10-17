@@ -25,6 +25,17 @@
       height: 20px;
       cursor: pointer;
     }
+    .poster {
+     width: 150px;
+      margin: 10px;
+    }
+    .movie-section {
+      display: flex;
+      overflow-x: scroll;
+    }
+    h2 {
+      color: #2c3e50;
+    }
   </style>
 </head>
 <body>
@@ -58,10 +69,55 @@
           </div>
         </div>
       </nav>
+
+      <div class="container mt-4">
+        <h2>Tendencias</h2>
+        <div class="movie-section">
+         
+        </div>
+      
+        <h2>Lo más popular</h2>
+        <div class="movie-section">
+        
+        </div>
+      
+        <h2>Ver gratis</h2>
+        <div class="movie-section">
+         
+        </div>
+      
+        <h2>Series o TV</h2>
+        <div class="movie-section">
+        
+        </div>
+      </div>
       
 
   </div>
 
+  <script>
+    const app = Vue.createApp({
+        data() {
+     return {
+        movies: {
+          trending: [],
+          popular: [],
+          free: [],
+          series: []
+        }
+      };
+    },
+        mounted() {
+      this.fetchMovies('trending', '/trending/movie/day');
+      this.fetchMovies('popular', '/movie/popular');
+      this.fetchMovies('free', '/movie/top_rated');
+      this.fetchMovies('series', '/tv/popular');
+    },
+      methods: {
+       
+      }
+    }).mount('#app');
+  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

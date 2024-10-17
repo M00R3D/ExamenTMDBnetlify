@@ -25,9 +25,10 @@
       height: 20px;
       cursor: pointer;
     }
-    .poster {
-      width: 150px;
-      margin: 10px;
+    .card {
+      width: 400px;
+      margin: 1px;
+      cursor: pointer;
     }
     .movie-section {
       display: flex;
@@ -35,6 +36,23 @@
     }
     h2 {
       color: #2c3e50;
+    }
+    .card-body p {
+      white-space: wrap;
+      overflow: hidden;
+      text-overflow: unset;
+      text-align: left;
+      text-indent: 2in;
+      text-justify: auto;
+      text-orientation: unset;
+      font-size: 50%;
+    }
+    .card-body {
+      height: 60px;
+      width: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   </style>
 </head>
@@ -77,7 +95,6 @@
             <li class="nav-item">
               <a class="nav-link" href="#">Más</a>
             </li>
-            <!-- Agregar enlace a Categoria -->
             <li class="nav-item">
               <a class="nav-link" href="categoria.html">Categorías</a>
             </li>
@@ -90,33 +107,58 @@
     <div class="container mt-4">
       <h2>Tendencias</h2>
       <div class="movie-section" v-if="movies.trending.length">
-        <div v-for="movie in movies.trending" :key="movie.id">
-          <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
-          <p>{{ movie.title }}</p>
+        <div class="card" v-for="movie in movies.trending" :key="movie.id" @click="showDetails(movie)">
+          <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="card-img-top">
+          <div class="card-body">
+            <p>{{ movie.title }}</p>
+          </div>
         </div>
       </div>
 
       <h2>Lo más popular</h2>
       <div class="movie-section" v-if="movies.popular.length">
-        <div v-for="movie in movies.popular" :key="movie.id">
-          <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
-          <p>{{ movie.title }}</p>
+        <div class="card" v-for="movie in movies.popular" :key="movie.id" @click="showDetails(movie)">
+          <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="card-img-top">
+          <div class="card-body">
+            <p>{{ movie.title }}</p>
+          </div>
         </div>
       </div>
 
       <h2>Ver gratis</h2>
       <div class="movie-section" v-if="movies.free.length">
-        <div v-for="movie in movies.free" :key="movie.id">
-          <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
-          <p>{{ movie.title }}</p>
+        <div class="card" v-for="movie in movies.free" :key="movie.id" @click="showDetails(movie)">
+          <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="card-img-top">
+          <div class="card-body">
+            <p>{{ movie.title }}</p>
+          </div>
         </div>
       </div>
 
       <h2>Series o TV</h2>
       <div class="movie-section" v-if="movies.series.length">
-        <div v-for="movie in movies.series" :key="movie.id">
-          <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
-          <p>{{ movie.title }}</p>
+        <div class="card" v-for="movie in movies.series" :key="movie.id" @click="showDetails(movie)">
+          <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="card-img-top">
+          <div class="card-body">
+            <!-- <p>{{ movie.title }}</p> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="selectedMovie" class="modal fade show" tabindex="-1" style="display: block;">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">{{ selectedMovie.title }}</h5>
+            <button type="button" class="btn-close" @click="closeModal"></button>
+          </div>
+          <div class="modal-body">
+            <p>{{ selectedMovie.overview }}</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" @click="closeModal">Cerrar</button>
+          </div>
         </div>
       </div>
     </div>
@@ -131,7 +173,8 @@
             popular: [],
             free: [],
             series: []
-          }
+          },
+          selectedMovie: null
         };
       },
       mounted() {
@@ -150,6 +193,12 @@
             .catch(error => {
               console.error('Error al obtener datos de TMDb:', error);
             });
+        },
+        showDetails(movie) {
+          this.selectedMovie = movie;
+        },
+        closeModal() {
+          this.selectedMovie = null;
         }
       }
     }).mount('#app');

@@ -26,7 +26,7 @@
       cursor: pointer;
     }
     .poster {
-     width: 150px;
+      width: 150px;
       margin: 10px;
     }
     .movie-section {
@@ -41,80 +41,98 @@
 <body>
   <div id="app">
     <nav class="navbar navbar-expand-lg navbar-custom">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="#">
-            <img src="logo.png" alt="Logo" class="logo">
-          </a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                  data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-                  aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link" href="#">Películas</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Series</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Cuenta</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Más</a>
-              </li>
-            </ul>
-            <img src="buscar.png" alt="Buscar" class="search-icon ms-auto">
-          </div>
-        </div>
-      </nav>
-
-      <div class="container mt-4">
-        <h2>Tendencias</h2>
-        <div class="movie-section">
-         
-        </div>
-      
-        <h2>Lo más popular</h2>
-        <div class="movie-section">
-        
-        </div>
-      
-        <h2>Ver gratis</h2>
-        <div class="movie-section">
-         
-        </div>
-      
-        <h2>Series o TV</h2>
-        <div class="movie-section">
-        
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <img src="logo.png" alt="Logo" class="logo">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="#">Películas</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Series</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Cuenta</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Más</a>
+            </li>
+          </ul>
+          <img src="buscar.png" alt="Buscar" class="search-icon ms-auto">
         </div>
       </div>
-      
+    </nav>
 
+
+    <div class="container mt-4">
+      <h2>Tendencias</h2>
+      <div class="movie-section" v-if="movies.trending.length">
+        <div v-for="movie in movies.trending" :key="movie.id">
+          <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
+          <p>{{ movie.title }}</p>
+        </div>
+      </div>
+
+      <h2>Lo más popular</h2>
+      <div class="movie-section" v-if="movies.popular.length">
+        <div v-for="movie in movies.popular" :key="movie.id">
+          <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
+          <p>{{ movie.title }}</p>
+        </div>
+      </div>
+
+      <h2>Ver gratis</h2>
+      <div class="movie-section" v-if="movies.free.length">
+        <div v-for="movie in movies.free" :key="movie.id">
+          <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
+          <p>{{ movie.title }}</p>
+        </div>
+      </div>
+
+      <h2>Series o TV</h2>
+      <div class="movie-section" v-if="movies.series.length">
+        <div v-for="movie in movies.series" :key="movie.id">
+          <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
+          <p>{{ movie.title }}</p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
     const app = Vue.createApp({
-        data() {
-     return {
-        movies: {
-          trending: [],
-          popular: [],
-          free: [],
-          series: []
-        }
-      };
-    },
-        mounted() {
-      this.fetchMovies('trending', '/trending/movie/day');
-      this.fetchMovies('popular', '/movie/popular');
-      this.fetchMovies('free', '/movie/top_rated');
-      this.fetchMovies('series', '/tv/popular');
-    },
+      data() {
+        return {
+          movies: {
+            trending: [],
+            popular: [],
+            free: [],
+            series: []
+          }
+        };
+      },
+      mounted() {
+        this.fetchMovies('trending', '/trending/movie/day');
+        this.fetchMovies('popular', '/movie/popular');
+        this.fetchMovies('free', '/movie/top_rated');
+        this.fetchMovies('series', '/tv/popular');
+      },
       methods: {
-       
+        fetchMovies(category, endpoint) {
+          const apiKey = '06524ff7325ce43f515a20c7b39d58a7'; // Inserta tu API Key de TMDb aquí
+          axios.get(`https://api.themoviedb.org/3${endpoint}?api_key=${apiKey}&language=es`)
+            .then(response => {
+              this.movies[category] = response.data.results;
+            })
+            .catch(error => {
+              console.error('Error al obtener datos de TMDb:', error);
+            });
+        }
       }
     }).mount('#app');
   </script>

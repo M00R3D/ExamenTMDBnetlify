@@ -1,147 +1,118 @@
-/* Estilos generales */
-body {
-  font-family: 'Roboto', sans-serif;
-  background-color: #1c1c1c;
-  color: #f5f5f5;
-  margin: 0;
-  padding: 0;
+/* .navbar {
+  margin-bottom: 20px;
 }
 
-.container {
-  max-width: 1200px;
-  margin: auto;
+.navbar-custom {
+  background-color: #2c3e50;
 }
 
-h2, h3 {
-  color: #f5f5f5;
+.navbar-custom a {
+  color: #ecf0f1;
 }
 
-/* Barra de Filtros */
-.col-md-3 h5, .col-md-3 h6 {
-  color: #ff0707;
+.poster {
+  width: 150px;
+  margin: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-select, input[type="date"], .btn {
-  background-color: #333;
-  color: #f5f5f5;
-  border: none;
-}
-
-select:focus, input[type="date"]:focus {
-  border: 1px solid #ffc107;
-  outline: none;
-}
-
-.btn-primary {
-  background-color: #ffc107;
-  border: none;
-  color: #1c1c1c;
-  transition: background-color 0.3s ease;
-}
-
-.btn-primary:hover {
-  background-color: #ff9800;
-}
-
-.btn-outline-primary {
-  color: #ffc107;
-  border-color: #ffc107;
-}
-
-.btn-outline-primary:hover {
-  background-color: #ffc107;
-  color: #1c1c1c;
-  border-color: #ffc107;
-}
-
-/* Tarjeta de película o serie */
-.card {
-  background-color: #2c2c2c;
-  border: none;
-  border-radius: 10px;
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
-}
-
-.card-img-top {
-  border-bottom: 2px solid #ffc107;
-}
-
-.card-body {
-  padding: 20px;
-}
-
-.card-title {
-  font-size: 1.25rem;
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: #ffc107;
-}
-
-.card-text {
-  font-size: 0.9rem;
-  color: #b3b3b3;
-}
-
-/* Ajustes para los textos largos */
-.card-text {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-height: 60px;
-}
-
-/* Diseño de la galería */
-.row {
+.movie-section {
   display: flex;
   flex-wrap: wrap;
 }
 
-.col-md-4 {
+.movie-card {
+  margin: 10px;
+  text-align: center;
+}
+
+.list-group-item {
+  cursor: pointer;
+}
+
+.list-group-item:hover {
+  background-color: #f0f0f0;
+} */
+/* Estilo general del cuerpo */
+body {
+  background-color: #f4f4f4;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Estilo de la barra de navegación */
+.navbar {
+  background-color: #343a40;
+}
+
+/* Estilo para la barra lateral */
+.col-md-3 {
+  background-color: #343a40;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+/* Estilo para los enlaces en la barra lateral */
+.list-group-item {
+  background-color: transparent;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  transition: background-color 0.3s;
+}
+
+.list-group-item:hover {
+  background-color: #495057;
+  cursor: pointer;
+}
+
+/* Estilo para la sección de películas y series */
+.col-md-9 {
+  padding: 20px;
+}
+
+/* Estilo para los títulos */
+h2 {
+  color: #333;
   margin-bottom: 20px;
 }
 
-/* Botón Ver Más */
-a.btn {
-  display: inline-block;
-  margin-top: 10px;
-  font-size: 0.85rem;
-  background-color: #ffc107;
-  color: #1c1c1c;
-  padding: 8px 12px;
+/* Estilo para las tarjetas de películas y series */
+.movie-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Espacio entre las tarjetas */
+}
+
+.movie-card {
+  background-color: #fff;
   border-radius: 5px;
-  text-decoration: none;
-  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+  overflow: hidden;
+  width: 150px; /* Ancho de la tarjeta */
 }
 
-a.btn:hover {
-  background-color: #ff9800;
+.movie-card:hover {
+  transform: translateY(-5px);
 }
 
-/* Ajustes de la barra de filtros */
-.form-select, .form-range {
-  background-color: #2c2c2c;
-  color: #f5f5f5;
-  border: none;
-  margin-bottom: 10px;
+/* Estilo para las imágenes de las películas y series */
+.poster {
+  width: 100%;
+  height: auto;
 }
 
-.form-range {
-  accent-color: #ffc107;
+/* Estilo para el texto dentro de las tarjetas */
+.movie-card p {
+  padding: 10px;
+  text-align: center;
+  color: #333;
+  margin: 0;
+  font-size: 16px;
 }
 
-input[type="checkbox"], input[type="radio"] {
-  accent-color: #ffc107;
-}
-
-label {
-  font-size: 0.9rem;
-  color: #f5f5f5;
+/* Estilo para el contenedor de la categoría */
+h4 {
+  color: #fff;
 }

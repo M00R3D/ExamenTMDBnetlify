@@ -6,115 +6,52 @@
   <title>Categoría</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="categoria.css">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
-  <div class="container mt-4">
-    <div class="row">
-    
-      <div class="col-md-3">
-        <h5>Ordenar</h5>
-        <div class="mb-3">
-          <select class="form-select">
-            <option selected>Popularidad</option>
-            <option value="1">Fecha de lanzamiento</option>
-            <option value="2">Puntuación</option>
-          </select>
-        </div>
-
-        <h5>Dónde se puede ver</h5>
-        <div class="mb-3">
-          <button class="btn btn-light">63 Plataformas</button>
-        </div>
-
-        <h5>Filtros</h5>
-        <div class="mb-3">
-          <label>Muéstrame</label>
-          <div>
-            <input type="radio" id="todo" name="show" checked> Todo<br>
-            <input type="radio" id="noVisto" name="show"> Películas que no he visto<br>
-            <input type="radio" id="visto" name="show"> Películas que he visto
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <input type="checkbox" id="disponibilidad" checked> Buscar por todas las disponibilidades?
-        </div>
-
-        <h6>Fechas de estreno</h6>
-        <div class="mb-3">
-          <label for="fechaDesde">Desde</label>
-          <input type="date" id="fechaDesde" class="form-control">
-          <label for="fechaHasta">Hasta</label>
-          <input type="date" id="fechaHasta" class="form-control" value="2025-04-18">
-        </div>
-
-        <h6>Géneros</h6>
-        <div class="mb-3">
-          <button class="btn btn-outline-primary btn-sm">Acción</button>
-          <button class="btn btn-outline-primary btn-sm">Animación</button>
-          <button class="btn btn-outline-primary btn-sm">Aventura</button>
-         
-        </div>
-
-        <h6>Idioma</h6>
-        <select class="form-select mb-3">
-          <option selected>Ninguno seleccionado</option>
-        </select>
-
-        <h6>Puntuación de los usuarios</h6>
-        <input type="range" class="form-range" min="1" max="10" step="1">
-
-        <h6>Votos mínimos de los usuarios</h6>
-        <input type="range" class="form-range" min="100" max="500" step="50">
-
-        <h6>Duración</h6>
-        <input type="range" class="form-range" min="60" max="360" step="30">
-
-        <div class="d-grid gap-2 mt-3">
-          <button class="btn btn-primary">Buscar</button>
-        </div>
+  <div id="app">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="home.html">Regresar a Home</a>
       </div>
+    </nav>
+    <div class="container mt-4">
+      <div class="row">
+        <div class="col-md-3">
+          <h4>Categorías</h4>
+          <ul class="list-group">
+            <li class="list-group-item" @click="fetchMovies('28'); setCategoryName('28')">Películas Populares</li>
+            <li class="list-group-item" @click="fetchMovies('29'); setCategoryName('29')">En Cartelera</li>
+            <li class="list-group-item" @click="fetchMovies('30'); setCategoryName('30')">Próximamente</li>
+            <li class="list-group-item" @click="fetchMovies('31'); setCategoryName('31')">Mejor Puntuadas</li>
+            <li class="list-group-item" @click="fetchSeries('32'); setCategoryName('32')">Series Populares</li>
+            <li class="list-group-item" @click="fetchSeries('33'); setCategoryName('33')">Series en Emisión</li>
+            <li class="list-group-item" @click="fetchSeries('34'); setCategoryName('34')">Series Mejor Puntuadas</li>
+          </ul>
+        </div>
+        <div class="col-md-9">
+          <h2>{{ categoryName }}</h2>
+          <div class="movie-section" v-if="movies.length">
+            <div class="movie-card" v-for="movie in movies" :key="movie.id">
+              <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
+              <p>{{ movie.title }}</p>
+            </div>
+          </div>
 
-    
-      <div class="col-md-9">
-        <h2>{{ categoryName }}</h2>
-
-        <h3>Películas</h3>
-        <div v-if="movies.length" class="row">
-          <div class="col-md-4 mb-4" v-for="movie in movies" :key="movie.id">
-            <div class="card h-100">
-              <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" class="card-img-top" :alt="movie.title">
-              <div class="card-body">
-                <h5 class="card-title">{{ movie.title }}</h5>
-                <p class="card-text">{{ movie.overview.slice(0, 100) }}...</p>
-                <a :href="'https://www.themoviedb.org/movie/' + movie.id" target="_blank" class="btn btn-primary">Ver más</a>
-              </div>
+          <h2>Series</h2>
+          <div class="movie-section" v-if="series.length">
+            <div class="movie-card" v-for="serie in series" :key="serie.id">
+              <img :src="'https://image.tmdb.org/t/p/w500' + serie.poster_path" :alt="serie.name" class="poster">
+              <p>{{ serie.name }}</p>
             </div>
           </div>
         </div>
-        <p v-else>No hay películas para mostrar.</p>
-
-        <h3>Series</h3>
-        <div v-if="series.length" class="row">
-          <div class="col-md-4 mb-4" v-for="serie in series" :key="serie.id">
-            <div class="card h-100">
-              <img :src="'https://image.tmdb.org/t/p/w500' + serie.poster_path" class="card-img-top" :alt="serie.name">
-              <div class="card-body">
-                <h5 class="card-title">{{ serie.name }}</h5>
-                <p class="card-text">{{ serie.overview.slice(0, 100) }}...</p>
-                <a :href="'https://www.themoviedb.org/tv/' + serie.id" target="_blank" class="btn btn-primary">Ver más</a>
-              </div>
-            </div>
-          </div>
-        </div>
-        <p v-else>No hay series para mostrar.</p>
       </div>
     </div>
   </div>
-
-  <script src="https://unpkg.com/vue@3"></script>
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="categoria.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

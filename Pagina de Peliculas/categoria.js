@@ -2,8 +2,8 @@
 const app = Vue.createApp({
   data() {
     return {
-      movies: [], // Asegúrate de que esta propiedad esté inicializada
-      series: [], // Asegúrate de que esta propiedad también esté inicializada
+      movies: [], 
+      series: [], 
       categoryName: ''
     };
   },
@@ -12,7 +12,7 @@ const app = Vue.createApp({
     const categoryId = urlParams.get('categoryId');
     if (categoryId) {
       this.fetchMovies(categoryId);
-      this.fetchSeries(categoryId); // Llamada para obtener las series
+      this.fetchSeries(categoryId);
       this.setCategoryName(categoryId);
     } else {
       console.error('No se proporcionó un ID de categoría');
@@ -38,10 +38,10 @@ const app = Vue.createApp({
         default:
           break;
       }
-      if (endpoint) { // Solo hacer la solicitud si hay un endpoint válido
+      if (endpoint) { 
         axios.get(`https://api.themoviedb.org/3${endpoint}?api_key=${apiKey}&language=es`)
           .then(response => {
-            this.movies = response.data.results || []; // Asigna un array vacío si no hay resultados
+            this.movies = response.data.results || []; 
           })
           .catch(error => {
             console.error('Error al obtener datos de TMDb:', error);
@@ -64,10 +64,10 @@ const app = Vue.createApp({
         default:
           break;
       }
-      if (endpoint) { // Solo hacer la solicitud si hay un endpoint válido
+      if (endpoint) {
         axios.get(`https://api.themoviedb.org/3${endpoint}?api_key=${apiKey}&language=es`)
           .then(response => {
-            this.series = response.data.results || []; // Asigna un array vacío si no hay resultados
+            this.series = response.data.results || []; 
           })
           .catch(error => {
             console.error('Error al obtener datos de TMDb:', error);

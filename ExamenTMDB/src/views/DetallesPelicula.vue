@@ -2,8 +2,8 @@
   <div>
     <nav class="navbar navbar-expand-lg navbar-custom">
       <div class="container-fluid">
-        <a class="navbar-brand" href="/home">
-          <!-- <img src="logo.png" alt="Logo" class="logo" /> -->
+        <a class="navbar-brand" href="/">
+          <img src="https://w7.pngwing.com/pngs/162/500/png-transparent-popcorn-popcorn-box-food.png" alt="Logo" class="logo" />
         </a>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">

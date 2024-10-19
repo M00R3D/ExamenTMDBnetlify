@@ -1,4 +1,4 @@
-body { 
+body {
   background-color: #413c3ce1; /* Color de fondo oscuro */
   font-family: 'Arial', sans-serif;
 }
@@ -8,8 +8,17 @@ body {
 }
 
 .col-md-3 {
-  background-color: #495057; /* Fondo lateral más claro */
+  background-color: #000000; /* Fondo lateral más claro */
   padding: 20px;
+  border-radius: 5px;
+}
+
+.filter-section h5 {
+  color: #fff;
+  margin-top: 15px;
+}
+
+.form-select, .form-control {
   border-radius: 5px;
 }
 

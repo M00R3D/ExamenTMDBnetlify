@@ -19,7 +19,10 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
             <li class="nav-item">
-            <button class="btn btn-danger" @click="logout">Cerrar sesión</button>
+              <span class="nav-link">{{ username ? `Hola, ${username}` : 'Usuario' }}</span>
+            </li>
+            <li class="nav-item">
+              <button class="btn btn-danger" @click="logout">Cerrar sesión</button>
             </li>
             <li class="nav-item dropdown">
               <a
@@ -103,6 +106,11 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 
+const username = ref('');
+
+onMounted(() => {
+  username.value = localStorage.getItem('username');
+});
 const movies = ref({
   trending: [],
   popular: [],

@@ -14,23 +14,33 @@
   const router = useRouter();
   
   onMounted(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const requestToken = urlParams.get('request_token');
-  
-    if (requestToken) {
-      axios.post(`https://api.themoviedb.org/3/authentication/session/new?api_key=${apiKey}`, {
-        request_token: requestToken
-      })
-      .then(response => {
-        const sessionId = response.data.session_id;
-        localStorage.setItem('sessionId', sessionId);
-        router.push({ name: 'Home' });
-      })
-      .catch(error => {
-        console.error('Error al crear session_id:', error);
-      });
-    }
-  });
+  const urlParams = new URLSearchParams(window.location.search);
+  const requestToken = urlParams.get('request_token');
+
+  if (requestToken) {
+    axios.post(`https://api.themoviedb.org/3/authentication/session/new?api_key=${apiKey}`, {
+      request_token: requestToken
+    })
+    .then(response => {
+      const sessionId = response.data.session_id;
+      localStorage.setItem('sessionId', sessionId);
+
+      axios.get(`https://api.themoviedb.org/3/account?api_key=${apiKey}&session_id=${sessionId}`)
+        .then(accountResponse => {
+          const username = accountResponse.data.username;
+          localStorage.setItem('username', username);
+          router.push({ name: 'Home' }); 
+        })
+        .catch(error => {
+          console.error('Error al obtener los detalles de la cuenta:', error);
+        });
+    })
+    .catch(error => {
+      console.error('Error al crear session_id:', error);
+    });
+  }
+});
+
   </script>
   
   <style scoped>

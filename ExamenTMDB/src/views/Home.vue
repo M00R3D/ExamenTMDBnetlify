@@ -18,6 +18,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
+            <li class="nav-item">
+            <button class="btn btn-danger" @click="logout">Cerrar sesión</button>
+            </li>
             <li class="nav-item dropdown">
               <a
                 class="nav-link dropdown-toggle"
@@ -108,6 +111,11 @@ const movies = ref({
 });
 
 const router = useRouter();
+
+const logout = () => {
+  localStorage.removeItem('sessionId');
+  router.push({ name: 'Login' });
+};
 
 onMounted(() => {
   fetchMovies('trending', '/trending/movie/day');

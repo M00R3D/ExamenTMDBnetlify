@@ -114,7 +114,7 @@
 
         <h4 class="mt-4">Recomendaciones</h4>
         <div class="row">
-          <div class="col-md-3" v-for="recommended in recommendations" :key="recommended.id">
+          <div class="col-md-3" v-for="recommended in recommendations" :key="recommended.id" @click="loadMovieDetails(recommended.id)" style="cursor: pointer;">
             <div class="card">
               <img :src="'https://image.tmdb.org/t/p/w500' + recommended.poster_path" :alt="recommended.title" class="card-img-top">
               <div class="card-body">
@@ -142,16 +142,11 @@
         };
       },
       mounted() {
-        const params = new URLSearchParams(window.location.search);
-        const movieId = params.get('movieId');
-        if (movieId) {
-          this.fetchMovieDetails(movieId);
-        } else {
-          console.error('No se encontró el ID de la película en la URL.');
-        }
+        this.loadMovieDetailsFromUrl();
+        window.addEventListener('popstate', this.loadMovieDetailsFromUrl);
       },
       methods: {
-        async fetchMovieDetails(movieId) {
+        async loadMovieDetails(movieId) {
           const apiKey = '06524ff7325ce43f515a20c7b39d58a7';
           try {
             const movieResponse = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}&language=es`);
@@ -168,8 +163,22 @@
 
             const recommendationsResponse = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}/recommendations?api_key=${apiKey}&language=es`);
             this.recommendations = recommendationsResponse.data.results;
+
+            window.scrollTo(0, 0);
+
+            const newUrl = `DetallesDePelicula.html?movieId=${movieId}`;
+            window.history.pushState({ movieId }, '', newUrl);
           } catch (error) {
             console.error('Error al obtener los detalles de la película:', error);
+          }
+        },
+        loadMovieDetailsFromUrl() {
+          const params = new URLSearchParams(window.location.search);
+          const movieId = params.get('movieId');
+          if (movieId) {
+            this.loadMovieDetails(movieId);
+          } else {
+            console.error('No se encontró el ID de la película en la URL.');
           }
         },
         goHome() {

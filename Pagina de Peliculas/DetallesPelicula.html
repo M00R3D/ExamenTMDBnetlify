@@ -25,16 +25,30 @@
       height: 20px;
       cursor: pointer;
     }
-    h2 {
+    h2, h3 {
       color: #2c3e50;
     }
     .poster {
-      width: 150px;
-      margin: 10px;
+      width: 200px;
+      margin: 10px 0;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .card img {
+      border-radius: 10px;
+      object-fit: cover;
+      width: 100%;
+      height: 150px;
     }
     .movie-section {
       display: flex;
-      overflow-x: scroll;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    iframe {
+      width: 100%;
+      height: 315px;
+      border-radius: 10px;
     }
   </style>
 </head>
@@ -43,7 +57,7 @@
     <nav class="navbar navbar-expand-lg navbar-custom">
       <div class="container-fluid">
         <a class="navbar-brand" href="home.html">
-          <img src="logo.png" alt="Logo" class="logo"> <!-- Asegúrate de que la ruta sea correcta -->
+          <img src="logo.png" alt="Logo" class="logo"> 
         </a>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
@@ -51,59 +65,62 @@
               <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Películas
               </a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="categoria.html?categoryId=28">Popular</a></li>
-                <li><a class="dropdown-item" href="categoria.html?categoryId=29">En cartelera</a></li>
-                <li><a class="dropdown-item" href="categoria.html?categoryId=30">Próximamente</a></li>
-                <li><a class="dropdown-item" href="categoria.html?categoryId=31">Mejor puntuadas</a></li>
-              </ul>
             </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Series
-              </a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="categoria.html?categoryId=32">Popular</a></li>
-                <li><a class="dropdown-item" href="categoria.html?categoryId=33">En emisión</a></li>
-                <li><a class="dropdown-item" href="categoria.html?categoryId=34">Mejor puntuadas</a></li>
-              </ul>
-            </li>
-            <li class="nav-item"><a class="nav-link" href="#">Cuenta</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Más</a></li>
           </ul>
         </div>
       </div>
     </nav>
 
     <div class="container mt-4">
+      <button class="btn btn-secondary mb-4" @click="goHome">Regresar a Home</button>
       <h2>Detalles de la Película</h2>
+
       <div v-if="movie">
-        <h3>{{ movie.title }}</h3>
-        <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="img-fluid">
-        <p><strong>Descripción:</strong> {{ movie.overview }}</p>
-        <p><strong>Categorías:</strong> <span v-for="(genre, index) in movie.genres" :key="index">{{ genre.name }}<span v-if="index < movie.genres.length - 1">, </span></span></p>
-        <p><strong>Rating:</strong> {{ movie.vote_average }}</p>
+        <div class="row">
+          <div class="col-md-4">
+            <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster img-fluid">
+          </div>
+          <div class="col-md-8">
+            <h3>{{ movie.title }}</h3>
+            <p><strong>Descripción:</strong> {{ movie.overview }}</p>
+            <p><strong>Categorías:</strong> 
+              <span v-for="(genre, index) in movie.genres" :key="index">{{ genre.name }}<span v-if="index < movie.genres.length - 1">, </span></span>
+            </p>
+            <p><strong>Rating:</strong> {{ movie.vote_average }}</p>
+          </div>
+        </div>
 
-        <h4>Reparto</h4>
-        <ul>
-          <li v-for="actor in cast" :key="actor.id">{{ actor.name }}</li>
-        </ul>
+        <h4 class="mt-4">Tráiler</h4>
+        <div v-if="trailer">
+          <iframe :src="'https://www.youtube.com/embed/' + trailer.key" allowfullscreen></iframe>
+        </div>
 
-        <h4>Palabras clave</h4>
+        <h4 class="mt-4">Reparto</h4>
+        <div class="row">
+          <div class="col-md-3" v-for="actor in cast" :key="actor.id">
+            <div class="card">
+              <img :src="'https://image.tmdb.org/t/p/w500' + actor.profile_path" :alt="actor.name" class="card-img-top" v-if="actor.profile_path">
+              <div class="card-body">
+                <p class="card-text">{{ actor.name }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h4 class="mt-4">Palabras clave</h4>
         <ul>
           <li v-for="keyword in keywords" :key="keyword.id">{{ keyword.name }}</li>
         </ul>
 
-        <h4>Trailer</h4>
-        <div v-if="trailer">
-          <iframe :src="'https://www.youtube.com/embed/' + trailer.key" width="560" height="315" frameborder="0" allowfullscreen></iframe>
-        </div>
-
-        <h4>Recomendaciones</h4>
-        <div class="movie-section">
-          <div v-for="recommended in recommendations" :key="recommended.id">
-            <img :src="'https://image.tmdb.org/t/p/w500' + recommended.poster_path" :alt="recommended.title" class="poster">
-            <p>{{ recommended.title }}</p>
+        <h4 class="mt-4">Recomendaciones</h4>
+        <div class="row">
+          <div class="col-md-3" v-for="recommended in recommendations" :key="recommended.id">
+            <div class="card">
+              <img :src="'https://image.tmdb.org/t/p/w500' + recommended.poster_path" :alt="recommended.title" class="card-img-top">
+              <div class="card-body">
+                <p class="card-text">{{ recommended.title }}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -135,30 +152,28 @@
       },
       methods: {
         async fetchMovieDetails(movieId) {
-          const apiKey = '06524ff7325ce43f515a20c7b39d58a7'; // Asegúrate de que esta clave sea válida
+          const apiKey = '06524ff7325ce43f515a20c7b39d58a7';
           try {
-            // Obtener detalles de la película
             const movieResponse = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}&language=es`);
             this.movie = movieResponse.data;
 
-            // Obtener el reparto
             const creditsResponse = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${apiKey}&language=es`);
             this.cast = creditsResponse.data.cast;
 
-            // Obtener palabras clave
             const keywordsResponse = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}/keywords?api_key=${apiKey}&language=es`);
             this.keywords = keywordsResponse.data.keywords;
 
-            // Obtener trailer
             const videoResponse = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${apiKey}&language=es`);
             this.trailer = videoResponse.data.results.find(video => video.type === 'Trailer');
 
-            // Obtener recomendaciones
             const recommendationsResponse = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}/recommendations?api_key=${apiKey}&language=es`);
             this.recommendations = recommendationsResponse.data.results;
           } catch (error) {
             console.error('Error al obtener los detalles de la película:', error);
           }
+        },
+        goHome() {
+          window.location.href = 'home.html';
         }
       }
     }).mount('#app');

@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -25,10 +25,9 @@
       height: 20px;
       cursor: pointer;
     }
-    .card {
-      width: 400px;
-      margin: 1px;
-      cursor: pointer;
+    .poster {
+      width: 150px;
+      margin: 10px;
     }
     .movie-section {
       display: flex;
@@ -36,23 +35,6 @@
     }
     h2 {
       color: #2c3e50;
-    }
-    .card-body p {
-      white-space: wrap;
-      overflow: hidden;
-      text-overflow: unset;
-      text-align: left;
-      text-indent: 2in;
-      text-justify: auto;
-      text-orientation: unset;
-      font-size: 50%;
-    }
-    .card-body {
-      height: 60px;
-      width: 160px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
   </style>
 </head>
@@ -68,35 +50,17 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Películas
-              </a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="categoria.html?categoryId=28">Popular</a></li>
-                <li><a class="dropdown-item" href="categoria.html?categoryId=29">En cartelera</a></li>
-                <li><a class="dropdown-item" href="categoria.html?categoryId=30">Próximamente</a></li>
-                <li><a class="dropdown-item" href="categoria.html?categoryId=31">Mejor puntuadas</a></li>
-              </ul>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Películas</a>
             </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Series
-              </a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="categoria.html?categoryId=32">Popular</a></li>
-                <li><a class="dropdown-item" href="categoria.html?categoryId=33">En emisión</a></li>
-                <li><a class="dropdown-item" href="categoria.html?categoryId=34">Mejor puntuadas</a></li>
-              </ul>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Series</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">Cuenta</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">Más</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="categoria.html">Categorías</a>
             </li>
           </ul>
           <img src="buscar.png" alt="Buscar" class="search-icon ms-auto">
@@ -107,58 +71,41 @@
     <div class="container mt-4">
       <h2>Tendencias</h2>
       <div class="movie-section" v-if="movies.trending.length">
-        <div class="card" v-for="movie in movies.trending" :key="movie.id" @click="showDetails(movie)">
-          <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="card-img-top">
-          <div class="card-body">
-            <p>{{ movie.title }}</p>
-          </div>
+        <div v-for="movie in movies.trending" :key="movie.id">
+          <a :href="'DetallesPelicula.html?movieId=' + movie.id">
+            <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
+          </a>
+          <p>{{ movie.title }}</p>
         </div>
       </div>
 
       <h2>Lo más popular</h2>
       <div class="movie-section" v-if="movies.popular.length">
-        <div class="card" v-for="movie in movies.popular" :key="movie.id" @click="showDetails(movie)">
-          <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="card-img-top">
-          <div class="card-body">
-            <p>{{ movie.title }}</p>
-          </div>
+        <div v-for="movie in movies.popular" :key="movie.id">
+          <a :href="'DetallesPelicula.html?movieId=' + movie.id">
+            <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
+          </a>
+          <p>{{ movie.title }}</p>
         </div>
       </div>
 
       <h2>Ver gratis</h2>
       <div class="movie-section" v-if="movies.free.length">
-        <div class="card" v-for="movie in movies.free" :key="movie.id" @click="showDetails(movie)">
-          <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="card-img-top">
-          <div class="card-body">
-            <p>{{ movie.title }}</p>
-          </div>
+        <div v-for="movie in movies.free" :key="movie.id">
+          <a :href="'DetallesPelicula.html?movieId=' + movie.id">
+            <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
+          </a>
+          <p>{{ movie.title }}</p>
         </div>
       </div>
 
       <h2>Series o TV</h2>
       <div class="movie-section" v-if="movies.series.length">
-        <div class="card" v-for="movie in movies.series" :key="movie.id" @click="showDetails(movie)">
-          <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="card-img-top">
-          <div class="card-body">
-            <!-- <p>{{ movie.title }}</p> -->
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div v-if="selectedMovie" class="modal fade show" tabindex="-1" style="display: block;">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">{{ selectedMovie.title }}</h5>
-            <button type="button" class="btn-close" @click="closeModal"></button>
-          </div>
-          <div class="modal-body">
-            <p>{{ selectedMovie.overview }}</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" @click="closeModal">Cerrar</button>
-          </div>
+        <div v-for="movie in movies.series" :key="movie.id">
+          <a :href="'DetallesPelicula.html?movieId=' + movie.id">
+            <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
+          </a>
+          <p>{{ movie.title }}</p>
         </div>
       </div>
     </div>
@@ -173,8 +120,7 @@
             popular: [],
             free: [],
             series: []
-          },
-          selectedMovie: null
+          }
         };
       },
       mounted() {
@@ -193,12 +139,6 @@
             .catch(error => {
               console.error('Error al obtener datos de TMDb:', error);
             });
-        },
-        showDetails(movie) {
-          this.selectedMovie = movie;
-        },
-        closeModal() {
-          this.selectedMovie = null;
         }
       }
     }).mount('#app');

@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -21,29 +21,33 @@
         <div class="col-md-3">
           <h4>Categorías</h4>
           <ul class="list-group">
-            <li class="list-group-item" @click="fetchMovies('28'); setCategoryName('28')">Películas Populares</li>
-            <li class="list-group-item" @click="fetchMovies('29'); setCategoryName('29')">En Cartelera</li>
-            <li class="list-group-item" @click="fetchMovies('30'); setCategoryName('30')">Próximamente</li>
-            <li class="list-group-item" @click="fetchMovies('31'); setCategoryName('31')">Mejor Puntuadas</li>
-            <li class="list-group-item" @click="fetchSeries('32'); setCategoryName('32')">Series Populares</li>
-            <li class="list-group-item" @click="fetchSeries('33'); setCategoryName('33')">Series en Emisión</li>
-            <li class="list-group-item" @click="fetchSeries('34'); setCategoryName('34')">Series Mejor Puntuadas</li>
+            <li class="list-group-item" @click="fetchMovies('28'); setCategoryName('Películas Populares')">Películas Populares</li>
+            <li class="list-group-item" @click="fetchMovies('29'); setCategoryName('En Cartelera')">En Cartelera</li>
+            <li class="list-group-item" @click="fetchMovies('30'); setCategoryName('Próximamente')">Próximamente</li>
+            <li class="list-group-item" @click="fetchMovies('31'); setCategoryName('Mejor Puntuadas')">Mejor Puntuadas</li>
+            <li class="list-group-item" @click="fetchSeries('32'); setCategoryName('Series Populares')">Series Populares</li>
+            <li class="list-group-item" @click="fetchSeries('33'); setCategoryName('Series en Emisión')">Series en Emisión</li>
+            <li class="list-group-item" @click="fetchSeries('34'); setCategoryName('Series Mejor Puntuadas')">Series Mejor Puntuadas</li>
           </ul>
         </div>
         <div class="col-md-9">
           <h2>{{ categoryName }}</h2>
           <div class="movie-section" v-if="movies.length">
             <div class="movie-card" v-for="movie in movies" :key="movie.id">
-              <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
-              <p>{{ movie.title }}</p>
+              <a :href="'DetallesPelicula.html?movieId=' + movie.id">
+                <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
+                <p>{{ movie.title }}</p>
+              </a>
             </div>
           </div>
 
           <h2>Series</h2>
           <div class="movie-section" v-if="series.length">
             <div class="movie-card" v-for="serie in series" :key="serie.id">
-              <img :src="'https://image.tmdb.org/t/p/w500' + serie.poster_path" :alt="serie.name" class="poster">
-              <p>{{ serie.name }}</p>
+              <a :href="'DetallesPelicula.html?movieId=' + serie.id">
+                <img :src="'https://image.tmdb.org/t/p/w500' + serie.poster_path" :alt="serie.name" class="poster">
+                <p>{{ serie.name }}</p>
+              </a>
             </div>
           </div>
         </div>

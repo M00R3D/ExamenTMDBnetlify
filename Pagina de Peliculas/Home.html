@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -28,6 +28,7 @@
     .poster {
       width: 150px;
       margin: 10px;
+      cursor: pointer; /* Para que el cursor cambie al pasar sobre la imagen */
     }
     .movie-section {
       display: flex;
@@ -50,11 +51,26 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link" href="categoria.html?categoryId=28">Películas</a>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Películas
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="categoria.html?categoryId=28">Popular</a></li>
+                <li><a class="dropdown-item" href="categoria.html?categoryId=29">En cartelera</a></li>
+                <li><a class="dropdown-item" href="categoria.html?categoryId=30">Próximamente</a></li>
+                <li><a class="dropdown-item" href="categoria.html?categoryId=31">Mejor puntuadas</a></li>
+              </ul>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="categoria.html?categoryId=32">Series</a>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Series
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="categoria.html?categoryId=32">Popular</a></li>
+                <li><a class="dropdown-item" href="categoria.html?categoryId=33">En emisión</a></li>
+                <li><a class="dropdown-item" href="categoria.html?categoryId=34">Mejor puntuadas</a></li>
+              </ul>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">Cuenta</a>
@@ -67,50 +83,37 @@
         </div>
       </div>
     </nav>
-
     <div class="container mt-4">
       <h2>Tendencias</h2>
       <div class="movie-section" v-if="movies.trending.length">
-        <div v-for="movie in movies.trending" :key="movie.id">
-          <a :href="'DetallesPelicula.html?movieId=' + movie.id">
-            <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
-          </a>
+        <div v-for="movie in movies.trending" :key="movie.id" @click="goToDetails(movie.id)">
+          <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
           <p>{{ movie.title }}</p>
         </div>
       </div>
-
       <h2>Lo más popular</h2>
       <div class="movie-section" v-if="movies.popular.length">
-        <div v-for="movie in movies.popular" :key="movie.id">
-          <a :href="'DetallesPelicula.html?movieId=' + movie.id">
-            <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
-          </a>
+        <div v-for="movie in movies.popular" :key="movie.id" @click="goToDetails(movie.id)">
+          <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
           <p>{{ movie.title }}</p>
         </div>
       </div>
-
       <h2>Ver gratis</h2>
       <div class="movie-section" v-if="movies.free.length">
-        <div v-for="movie in movies.free" :key="movie.id">
-          <a :href="'DetallesPelicula.html?movieId=' + movie.id">
-            <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
-          </a>
+        <div v-for="movie in movies.free" :key="movie.id" @click="goToDetails(movie.id)">
+          <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
           <p>{{ movie.title }}</p>
         </div>
       </div>
-
       <h2>Series o TV</h2>
       <div class="movie-section" v-if="movies.series.length">
-        <div v-for="movie in movies.series" :key="movie.id">
-          <a :href="'DetallesPelicula.html?movieId=' + movie.id">
-            <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
-          </a>
+        <div v-for="movie in movies.series" :key="movie.id" @click="goToDetails(movie.id)">
+          <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
           <p>{{ movie.title }}</p>
         </div>
       </div>
     </div>
   </div>
-
   <script>
     const app = Vue.createApp({
       data() {
@@ -139,11 +142,13 @@
             .catch(error => {
               console.error('Error al obtener datos de TMDb:', error);
             });
+        },
+        goToDetails(movieId) {
+          window.location.href = `DetallesPelicula.html?movieId=${movieId}`;
         }
       }
     }).mount('#app');
   </script>
-
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

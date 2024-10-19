@@ -15,16 +15,24 @@
       font-weight: bold; 
       border-radius: 5px; 
       padding: 5px 5px; 
-      
       transition: background-color 0.3s, transform 0.3s; 
-      
     }
 
     .btn-home:hover {
       background-color: #0056b3;
-      
       transform: translateY(-2px); 
-      
+    }
+
+    .movie-card {
+      display: inline-block;
+      margin: 10px;
+      text-align: center;
+    }
+
+    .poster {
+      width: 150px; /* Ajustar según tus necesidades */
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
   </style>
 </head>
@@ -41,11 +49,11 @@
           <h4 class="text-center">Filtros</h4>
           <div class="filter-section">
             <h5>Ordenar por</h5>
-            <select class="form-select">
-              <option selected>Seleccionar...</option>
-              <option value="1">Popularidad</option>
-              <option value="2">Fecha de Estreno</option>
-              <option value="3">Mejor Puntuación</option>
+            <select class="form-select" v-model="order">
+              <option value="">Seleccionar...</option>
+              <option value="popularity.desc">Popularidad</option>
+              <option value="release_date.desc">Fecha de Estreno</option>
+              <option value="vote_average.desc">Mejor Puntuación</option>
             </select>
 
             <h5 class="mt-3">Dónde se puede ver</h5>
@@ -104,7 +112,7 @@
             <h5 class="mt-3">Palabras Clave</h5>
             <input type="text" class="form-control mb-2" placeholder="Buscar...">
 
-            <button class="btn btn-primary mt-3" type="button">Buscar</button>
+            <button class="btn btn-primary mt-3" type="button" @click="filterItems">Buscar</button>
           </div>
         </div>
         <div class="col-md-9">
@@ -118,7 +126,7 @@
             </div>
           </div>
 
-          <h2></h2>
+          <h2>Series</h2>
           <div class="movie-section" v-if="series.length">
             <div class="movie-card" v-for="serie in series" :key="serie.id">
               <a :href="'DetallesPelicula.html?movieId=' + serie.id">
@@ -131,8 +139,51 @@
       </div>
     </div>
   </div>
+  
   <script src="categoria.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+          categoryName: '',
+          movies: [],
+          series: [],
+          order: '',
+        };
+      },
+      mounted() {
+        this.loadItemsFromUrl();
+      },
+      methods: {
+        async loadItemsFromUrl() {
+          const params = new URLSearchParams(window.location.search);
+          const category = params.get('type') || 'movies'; // Por defecto a 'movies'
+          this.categoryName = category === 'movies' ? 'Películas' : 'Series';
+          await this.loadItems(category);
+        },
+        async loadItems(type) {
+          const apiKey = '06524ff7325ce43f515a20c7b39d58a7'; // No reemplazar
+          try {
+            const response = await axios.get(`https://api.themoviedb.org/3/discover/${type}?api_key=${apiKey}&language=es&sort_by=${this.order}`);
+            if (type === 'movies') {
+              this.movies = response.data.results;
+              this.series = [];
+            } else {
+              this.series = response.data.results;
+              this.movies = [];
+            }
+          } catch (error) {
+            console.error('Error al cargar los elementos:', error);
+          }
+        },
+        filterItems() {
+          this.loadItems(this.categoryName.toLowerCase());
+        },
+      },
+    }).mount('#app');
+  </script>
 </body>
 </html>

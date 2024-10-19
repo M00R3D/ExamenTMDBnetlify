@@ -21,6 +21,16 @@ const routes = [
     component: Authenticated 
   },
   { 
+    path: '/detallespelicula', 
+    name: 'DetallesPelicula', 
+    component: DetallesPelicula 
+  },
+  {
+    path: '/categoria', 
+    name: 'Categoria', 
+    component: Categoria 
+  },
+  { 
     path: '/', 
     name: 'Home', 
     component: Home, 

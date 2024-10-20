@@ -30,6 +30,13 @@ const routes = [
     name: 'Categoria', 
     component: Categoria 
   },
+  {
+    path: '/detalleArtista',
+    name: 'DetalleArtista',
+    component: DetalleArtista 
+  }
+  
+  ,
   { 
     path: '/', 
     name: 'Home', 
@@ -49,3 +56,5 @@ const router = createRouter({
 });
 
 export default router;
+
+

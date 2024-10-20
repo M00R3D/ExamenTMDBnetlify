@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Detalles del Artista</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="detalleArtista.css"> <!-- Asegúrate de que el archivo CSS esté correctamente enlazado -->
+  <link rel="stylesheet" href="detalleArtista.css">
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
@@ -91,7 +91,49 @@
     </div>
   </div>
 
-  <script src="detalleArtista.js"></script>
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+          artist: null,
+          knownFor: [],
+          filmography: []
+        };
+      },
+      mounted() {
+        const params = new URLSearchParams(window.location.search);
+        const artistId = params.get('artistId');
+        if (artistId) {
+          this.loadArtistDetails(artistId);
+        }
+      },
+      methods: {
+        async loadArtistDetails(artistId) {
+          const apiKey = '06524ff7325ce43f515a20c7b39d58a7'; 
+          try {
+            const response = await axios.get(`https://api.themoviedb.org/3/person/${artistId}?api_key=${apiKey}&language=es`);
+            this.artist = response.data;
+
+            const knownForResponse = await axios.get(`https://api.themoviedb.org/3/person/${artistId}/movie_credits?api_key=${apiKey}&language=es`);
+            this.knownFor = knownForResponse.data.cast;
+
+            const filmographyResponse = await axios.get(`https://api.themoviedb.org/3/person/${artistId}/combined_credits?api_key=${apiKey}&language=es`);
+            this.filmography = filmographyResponse.data.cast;
+
+          } catch (error) {
+            console.error('Error al obtener detalles del artista:', error);
+          }
+        },
+        goHome() {
+          window.location.href = 'home.html';
+        },
+        goToMovieDetails(movieId) {
+          window.location.href = `DetallesPelicula.html?movieId=${movieId}`;
+        }
+      }
+    }).mount('#app');
+  </script>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

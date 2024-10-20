@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -9,33 +9,33 @@
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <style>
     body {
-      background-color: #121212; /* Fondo oscuro */
-      color: #ffffff; /* Color de texto blanco */
+      background-color: #121212; 
+      color: #ffffff; 
       font-family: 'Arial', sans-serif;
     }
 
     .navbar-custom {
-      background-color: #1c2833; /* Color del navbar */
+      background-color: #1c2833;
     }
 
     .navbar-custom a {
-      color: #ecf0f1; /* Color de los enlaces */
+      color: #ecf0f1;
       margin-right: 20px;
     }
 
     .navbar-custom a:hover {
-      color: #f39c12; /* Color de los enlaces al pasar el mouse */
+      color: #f39c12; 
     }
 
     .poster {
-      width: 100%; /* Para que las imágenes ocupen todo el ancho de la tarjeta */
-      border-radius: 10px 10px 0 0; /* Bordes redondeados en la parte superior */
-      transition: transform 0.3s, box-shadow 0.3s; /* Transiciones suaves */
+      width: 100%; 
+      border-radius: 10px 10px 0 0; 
+      transition: transform 0.3s, box-shadow 0.3s; 
     }
 
     .poster:hover {
-      transform: scale(1.05); /* Escalado al pasar el mouse */
-      box-shadow: 0 8px 20px rgba(255, 165, 0, 0.7); /* Sombra más intensa al pasar el mouse */
+      transform: scale(1.05); 
+      box-shadow: 0 8px 20px rgba(255, 165, 0, 0.7); 
     }
 
     .movie-card {
@@ -98,7 +98,7 @@
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Series
+                Serie
               </a>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="categoria.html?categoryId=32">Popular</a></li>
@@ -118,37 +118,36 @@
       </div>
     </nav>
 
-  
     <div class="container mt-4">
       <h2>Tendencias</h2>
       <div class="movie-section">
-        <div v-for="movie in movies.trending" :key="movie.id" @click="goToDetails(movie.id)" class="movie-card">
-          <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
-          <p class="movie-title">{{ movie.title }}</p>
+        <div v-for="item in movies.trending" :key="item.id" @click="goToDetails(item.id)" class="movie-card">
+          <img :src="'https://image.tmdb.org/t/p/w500' + item.poster_path" :alt="item.title" class="poster">
+          <p class="movie-title">{{ item.title }}</p>
         </div>
       </div>
 
       <h2>Lo más popular</h2>
       <div class="movie-section">
-        <div v-for="movie in movies.popular" :key="movie.id" @click="goToDetails(movie.id)" class="movie-card">
-          <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
-          <p class="movie-title">{{ movie.title }}</p>
+        <div v-for="item in movies.popular" :key="item.id" @click="goToDetails(item.id)" class="movie-card">
+          <img :src="'https://image.tmdb.org/t/p/w500' + item.poster_path" :alt="item.title" class="poster">
+          <p class="movie-title">{{ item.title }}</p>
         </div>
       </div>
 
       <h2>Películas Gratis</h2>
       <div class="movie-section">
-        <div v-for="movie in movies.free" :key="movie.id" @click="goToDetails(movie.id)" class="movie-card">
-          <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
-          <p class="movie-title">{{ movie.title }}</p>
+        <div v-for="item in movies.free" :key="item.id" @click="goToDetails(item.id)" class="movie-card">
+          <img :src="'https://image.tmdb.org/t/p/w500' + item.poster_path" :alt="item.title" class="poster">
+          <p class="movie-title">{{ item.title }}</p>
         </div>
       </div>
 
       <h2>Series o TV</h2>
       <div class="movie-section">
-        <div v-for="movie in movies.series" :key="movie.id" @click="goToDetails(movie.id)" class="movie-card">
-          <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
-          <p class="movie-title">{{ movie.title }}</p>
+        <div v-for="item in movies.series" :key="item.id" @click="goToDetails(item.id)" class="movie-card">
+          <img :src="'https://image.tmdb.org/t/p/w500' + item.poster_path" :alt="item.title" class="poster">
+          <p class="movie-title">{{ item.title }}</p>
         </div>
       </div>
     </div>

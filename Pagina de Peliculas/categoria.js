@@ -1,28 +1,28 @@
-
-const app = Vue.createApp({
+const app = Vue.createApp({  
   data() {
     return {
-      movies: [], 
-      series: [], 
-      categoryName: ''
+      items: [], 
+      shows: [], 
+      categoryName: '', 
+      order: '' 
     };
   },
   mounted() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const categoryId = urlParams.get('categoryId');
-    if (categoryId) {
-      this.fetchMovies(categoryId);
-      this.fetchSeries(categoryId);
-      this.setCategoryName(categoryId);
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('categoryId');
+    if (id) {
+      this.loadItems(id);
+      this.loadShows(id);
+      this.assignSectionName(id);
     } else {
       console.error('No se proporcionó un ID de categoría');
     }
   },
   methods: {
-    fetchMovies(categoryId) {
+    loadItems(id) {
       const apiKey = '06524ff7325ce43f515a20c7b39d58a7';
       let endpoint = '';
-      switch (categoryId) {
+      switch (id) {
         case '28':
           endpoint = '/movie/popular';
           break;
@@ -41,17 +41,18 @@ const app = Vue.createApp({
       if (endpoint) { 
         axios.get(`https://api.themoviedb.org/3${endpoint}?api_key=${apiKey}&language=es`)
           .then(response => {
-            this.movies = response.data.results || []; 
+            this.items = response.data.results || []; 
+            console.log('Items:', this.items); 
           })
           .catch(error => {
             console.error('Error al obtener datos de TMDb:', error);
           });
       }
     },
-    fetchSeries(categoryId) {
+    loadShows(id) {
       const apiKey = '06524ff7325ce43f515a20c7b39d58a7';
       let endpoint = '';
-      switch (categoryId) {
+      switch (id) {
         case '32':
           endpoint = '/tv/popular';
           break;
@@ -67,15 +68,16 @@ const app = Vue.createApp({
       if (endpoint) {
         axios.get(`https://api.themoviedb.org/3${endpoint}?api_key=${apiKey}&language=es`)
           .then(response => {
-            this.series = response.data.results || []; 
+            this.shows = response.data.results || []; 
+            console.log('Shows:', this.shows); 
           })
           .catch(error => {
             console.error('Error al obtener datos de TMDb:', error);
           });
       }
     },
-    setCategoryName(categoryId) {
-      switch (categoryId) {
+    assignSectionName(id) {
+      switch (id) {
         case '28':
           this.categoryName = 'Películas Populares';
           break;
@@ -101,6 +103,10 @@ const app = Vue.createApp({
           this.categoryName = 'Categoría Desconocida';
           break;
       }
+    },
+    filterItems() {
+    
+      console.log('Filtrar elementos por:', this.order);
     }
   }
 }).mount('#app');

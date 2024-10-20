@@ -163,7 +163,7 @@
       },
       methods: {
         async loadMovieDetails(movieId) {
-          const apiKey = '06524ff7325ce43f515a20c7b39d58a7'; // No reemplazar
+          const apiKey = '06524ff7325ce43f515a20c7b39d58a7'
           try {
             const movieResponse = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}&language=es`);
             this.movie = movieResponse.data;

@@ -1,5 +1,5 @@
-body {
-  background-color: #413c3ce1; /* Color de fondo oscuro */
+body { 
+  background-color: #413c3ce1; 
   font-family: 'Arial', sans-serif;
 }
 
@@ -8,7 +8,7 @@ body {
 }
 
 .col-md-3 {
-  background-color: #000000; /* Fondo lateral más claro */
+  background-color: #000000; 
   padding: 20px;
   border-radius: 5px;
 }
@@ -31,7 +31,7 @@ body {
 }
 
 .list-group-item:hover {
-  background-color: #6c757d; /* Color al pasar el ratón */
+  background-color: #6c757d;
   cursor: pointer;
   transform: translateY(-2px);
 }
@@ -43,11 +43,11 @@ body {
 .movie-section {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px; /* Espacio entre las tarjetas */
+  gap: 20px; 
 }
 
 .movie-card {
-  background-color: #fff; /* Color de fondo de la tarjeta */
+  background-color: #fff; 
   border-radius: 5px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s, box-shadow 0.2s;

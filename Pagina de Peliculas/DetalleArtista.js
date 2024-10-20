@@ -1,4 +1,4 @@
-const app = Vue.createApp({
+const app = Vue.createApp({ 
   data() {
     return {
       artist: null,
@@ -12,7 +12,7 @@ const app = Vue.createApp({
   },
   methods: {
     async loadArtistDetails(artistId) {
-      const apiKey = '06524ff7325ce43f515a20c7b39d58a7'; // No reemplazar
+      const apiKey = '06524ff7325ce43f515a20c7b39d58a7'; 
       try {
         const artistResponse = await axios.get(`https://api.themoviedb.org/3/person/${artistId}?api_key=${apiKey}&language=es`);
         this.artist = artistResponse.data;
@@ -24,7 +24,7 @@ const app = Vue.createApp({
         this.filmography = filmographyResponse.data.cast;
 
         window.scrollTo(0, 0);
-        const newUrl = `DetalleArtista.html?artistId=${artistId}`;
+        const newUrl = `DetalleArtista.html?artistId=${artistId}`; 
         window.history.pushState({ artistId }, '', newUrl);
       } catch (error) {
         console.error('Error al obtener los detalles del artista:', error);

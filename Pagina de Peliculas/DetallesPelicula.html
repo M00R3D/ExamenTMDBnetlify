@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Detalles de la Película</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script> <!-- Usar la versión de producción -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <style>
     .navbar-custom {
@@ -110,9 +110,12 @@
         <div v-if="trailer">
           <iframe :src="'https://www.youtube.com/embed/' + trailer.key" allowfullscreen></iframe>
         </div>
+        <div v-else>
+          <p>No se encontró tráiler.</p>
+        </div>
 
         <h4 class="mt-4">Reparto</h4>
-        <div class="row">
+        <div class="row" v-if="cast.length">
           <div class="col-md-3" v-for="actor in cast" :key="actor.id" @click="goToArtistDetails(actor.id)" style="cursor: pointer;">
             <div class="card">
               <img :src="'https://image.tmdb.org/t/p/w500' + actor.profile_path" :alt="actor.name" class="card-img-top" v-if="actor.profile_path">
@@ -122,14 +125,20 @@
             </div>
           </div>
         </div>
+        <div v-else>
+          <p>No se encontraron actores.</p>
+        </div>
 
         <h4 class="mt-4">Palabras clave</h4>
-        <ul>
+        <ul v-if="keywords.length">
           <li v-for="keyword in keywords" :key="keyword.id">{{ keyword.name }}</li>
         </ul>
+        <div v-else>
+          <p>No se encontraron palabras clave.</p>
+        </div>
 
         <h4 class="mt-4">Recomendaciones</h4>
-        <div class="row">
+        <div class="row" v-if="recommendations.length">
           <div class="col-md-3" v-for="recommended in recommendations" :key="recommended.id" @click="loadMovieDetails(recommended.id)" style="cursor: pointer;">
             <div class="card">
               <img :src="'https://image.tmdb.org/t/p/w500' + recommended.poster_path" :alt="recommended.title" class="card-img-top">
@@ -138,6 +147,9 @@
               </div>
             </div>
           </div>
+        </div>
+        <div v-else>
+          <p>No se encontraron recomendaciones.</p>
         </div>
       </div>
       <div v-else>

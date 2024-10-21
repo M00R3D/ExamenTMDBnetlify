@@ -91,31 +91,37 @@ export default {
       filmography: [],
     };
   },
-  created() {
-    this.fetchArtistDetails();
+  mounted() {
+    const params = new URLSearchParams(window.location.search);
+    const artistId = params.get('artistId'); // Cambiado para obtener el ID de la URL
+    if (artistId) {
+      this.loadArtistDetails(artistId);
+    }
   },
   methods: {
-    goHome() {
-      this.$router.push('/home');
+    async loadArtistDetails(artistId) {
+      const apiKey = '06524ff7325ce43f515a20c7b39d58a7'; // Asegúrate de usar tu API Key real
+      try {
+        const response = await axios.get(`https://api.themoviedb.org/3/person/${artistId}?api_key=${apiKey}&language=es`);
+        this.artist = response.data;
+
+        const knownForResponse = await axios.get(`https://api.themoviedb.org/3/person/${artistId}/movie_credits?api_key=${apiKey}&language=es`);
+        this.knownFor = knownForResponse.data.cast;
+
+        const filmographyResponse = await axios.get(`https://api.themoviedb.org/3/person/${artistId}/combined_credits?api_key=${apiKey}&language=es`);
+        this.filmography = filmographyResponse.data.cast;
+
+      } catch (error) {
+        console.error('Error al obtener detalles del artista:', error);
+      }
     },
-    fetchArtistDetails() {
-      const artistId = this.$route.params.id;
-      axios
-        .get(`https://api.themoviedb.org/3/person/${artistId}?api_key=TU_API_KEY`)
-        .then(response => {
-          this.artist = response.data;
-        });
-      axios
-        .get(`https://api.themoviedb.org/3/person/${artistId}/movie_credits?api_key=TU_API_KEY`)
-        .then(response => {
-          this.knownFor = response.data.cast.slice(0, 6);
-          this.filmography = response.data.cast;
-        });
+    goHome() {
+      this.$router.push('/home'); // Cambiado para usar Vue Router
     },
     goToMovieDetails(movieId) {
-      this.$router.push(`/detallePelicula/${movieId}`);
-    },
-  },
+      this.$router.push(`/detalles/${movieId}`); // Cambiado para usar Vue Router
+    }
+  }
 };
 </script>
 
@@ -152,13 +158,6 @@ h2, h3, h4 {
   height: auto;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.movie-section {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
 }
 
 .card {

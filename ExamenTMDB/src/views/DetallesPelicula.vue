@@ -1,4 +1,4 @@
-<template>
+}<template>
   <div>
     <nav class="navbar navbar-expand-lg navbar-custom">
       <div class="container-fluid">
@@ -156,6 +156,12 @@ const fetchMovieDetails = async (movieId) => {
   } catch (error) {
     console.error('Error al obtener los detalles de la película:', error);
   }
+};
+
+// Nueva función para cargar los detalles de la película seleccionada y desplazarse al principio
+const loadMovieDetails = async (recommendedId) => {
+  await fetchMovieDetails(recommendedId);
+  window.scrollTo(0, 0); // Desplazarse al inicio de la página
 };
 
 const goHome = () => {

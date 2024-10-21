@@ -5,6 +5,7 @@
         <a class="navbar-brand btn-home" href="/">Atrás</a>
       </div>
     </nav>
+    
     <div class="container mt-4">
       <div class="row">
         <div class="col-md-3">
@@ -33,7 +34,7 @@
             </ul>
 
             <h5 class="mt-3">Certificación</h5>
-            <select class="form-select mb-2">
+            <select class="form-select mb-2" v-model="selectedCertification" @change="filterMovies">
               <option selected>Seleccionar...</option>
               <option value="G">G</option>
               <option value="PG">PG</option>
@@ -42,7 +43,7 @@
             </select>
 
             <h5 class="mt-3">Idioma</h5>
-            <select class="form-select mb-2">
+            <select class="form-select mb-2" v-model="selectedLanguage" @change="filterMovies">
               <option selected>Seleccionar...</option>
               <option value="es">Español</option>
               <option value="en">Inglés</option>
@@ -50,29 +51,30 @@
             </select>
 
             <h5 class="mt-3">Puntuación de Usuarios</h5>
-            <input type="range" class="form-range" min="0" max="10" step="1">
+            <input type="range" class="form-range" min="0" max="10" step="1" v-model="userScore" @change="filterMovies">
 
             <h5 class="mt-3">Votos Mínimos</h5>
-            <input type="number" class="form-control mb-2" placeholder="Número de votos">
+            <input type="number" class="form-control mb-2" placeholder="Número de votos" v-model="minVotes" @change="filterMovies">
 
             <h5 class="mt-3">Duración</h5>
-            <input type="number" class="form-control mb-2" placeholder="Minutos">
+            <input type="number" class="form-control mb-2" placeholder="Minutos" v-model="duration" @change="filterMovies">
 
             <h5 class="mt-3">Palabras Clave</h5>
-            <input type="text" class="form-control mb-2" placeholder="Buscar...">
+            <input type="text" class="form-control mb-2" placeholder="Buscar..." v-model="keywords" @input="filterMovies">
 
             <button class="btn btn-primary mt-3" type="button" @click="filterMovies">Buscar</button>
           </div>
         </div>
+        
         <div class="col-md-9">
           <h2>{{ categoryName }}</h2>
-
           <div class="movie-section" v-if="filteredMovies.length">
             <div class="movie-card" v-for="movie in filteredMovies" :key="movie.id" @click="goToDetallesPelicula(movie.id)" style="cursor: pointer;">
               <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
               <p>{{ movie.title }}</p>
             </div>
           </div>
+          <button v-if="moreMoviesAvailable" @click="loadMoreMovies" class="btn btn-primary mt-3">Ver Más Películas</button>
 
           <div class="movie-section" v-if="series.length">
             <div class="movie-card" v-for="serie in series" :key="serie.id" @click="goToDetallesSeries(serie.id)" style="cursor: pointer;">
@@ -101,6 +103,13 @@ export default {
       sortOption: '',
       selectedPlatforms: [],
       selectedGenres: [],
+      selectedCertification: '', // Nuevo
+      selectedLanguage: '', // Nuevo
+      userScore: 0, // Nuevo
+      minVotes: null, // Nuevo
+      duration: null, // Nuevo
+      keywords: '', // Nuevo
+      limit: 10,
     };
   },
   mounted() {
@@ -113,6 +122,11 @@ export default {
       this.setCategoryName(categoryId);
     } else {
       console.error('No se proporcionó un ID de categoría');
+    }
+  },
+  computed: {
+    moreMoviesAvailable() {
+      return this.filteredMovies.length > this.limit;
     }
   },
   methods: {
@@ -149,7 +163,7 @@ export default {
         axios.get(`https://api.themoviedb.org/3${endpoint}?api_key=${apiKey}&language=es`)
           .then(response => {
             this.movies = response.data.results || [];
-            this.filteredMovies = this.movies; 
+            this.filteredMovies = this.movies.slice(0, this.limit); 
             this.filterMovies(); 
           })
           .catch(error => {
@@ -218,11 +232,40 @@ export default {
           : true;
 
         const matchesPlatforms = this.selectedPlatforms.length
-          ? this.selectedPlatforms.some(platformId => movie.platforms && movie.platforms.includes(platformId))
+          ? movie.platforms && movie.platforms.some(platformId => this.selectedPlatforms.includes(platformId))
           : true;
 
-        return matchesGenres && matchesPlatforms;
-      });
+        const matchesCertification = this.selectedCertification
+          ? movie.certification === this.selectedCertification
+          : true;
+
+        const matchesLanguage = this.selectedLanguage
+          ? movie.original_language === this.selectedLanguage
+          : true;
+
+        const matchesUserScore = movie.vote_average >= this.userScore;
+
+        const matchesMinVotes = this.minVotes
+          ? movie.vote_count >= this.minVotes
+          : true;
+
+        const matchesDuration = this.duration
+          ? movie.runtime <= this.duration
+          : true;
+
+        const matchesKeywords = this.keywords
+          ? movie.title.toLowerCase().includes(this.keywords.toLowerCase())
+          : true;
+
+        return matchesGenres &&
+               matchesPlatforms &&
+               matchesCertification &&
+               matchesLanguage &&
+               matchesUserScore &&
+               matchesMinVotes &&
+               matchesDuration &&
+               matchesKeywords;
+      }).slice(0, this.limit);
     },
     sortMovies() {
       if (this.sortOption) {
@@ -236,6 +279,10 @@ export default {
     },
     goToDetallesSeries(id) {
       this.$router.push(`/detallesserie/${id}`);
+    },
+    loadMoreMovies() {
+      this.limit += 10; // Incrementa el límite de películas a mostrar
+      this.filterMovies(); // Filtra de nuevo para incluir más películas
     },
   },
 };
@@ -270,6 +317,7 @@ export default {
   width: 100%;
   max-width: 200px;
 }
+
 body {
   background-color: #413c3ce1;
   font-family: 'Arial', sans-serif;

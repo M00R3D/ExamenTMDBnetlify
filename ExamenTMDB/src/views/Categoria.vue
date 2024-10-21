@@ -80,21 +80,17 @@
         <div class="col-md-9">
           <h2>{{ categoryName }}</h2>
           <div class="movie-section" v-if="movies.length">
-            <div class="movie-card" v-for="movie in movies" :key="movie.id">
-              <a :href="'DetallesPelicula.html?movieId=' + movie.id">
-                <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
-                <p>{{ movie.title }}</p>
-              </a>
+            <div class="movie-card" v-for="movie in movies" :key="movie.id" @click="goToDetallesPelicula(movie.id)" style="cursor: pointer;">
+              <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
+              <p>{{ movie.title }}</p>
             </div>
           </div>
 
           <h2></h2>
           <div class="movie-section" v-if="series.length">
-            <div class="movie-card" v-for="serie in series" :key="serie.id">
-              <a :href="'DetallesPelicula.html?movieId=' + serie.id">
-                <img :src="'https://image.tmdb.org/t/p/w500' + serie.poster_path" :alt="serie.name" class="poster">
-                <p>{{ serie.name }}</p>
-              </a>
+            <div class="movie-card" v-for="serie in series" :key="serie.id" @click="goToDetallesSeries(serie.id)" style="cursor: pointer;">
+              <img :src="'https://image.tmdb.org/t/p/w500' + serie.poster_path" :alt="serie.name" class="poster">
+              <p>{{ serie.name }}</p>
             </div>
           </div>
         </div>
@@ -105,6 +101,7 @@
 
 <script>
 import axios from 'axios';
+import { useRouter } from 'vue-router';
 
 export default {
   data() {
@@ -211,16 +208,12 @@ export default {
       }
     },
     filterMovies() {
-
-
-
-
-
-
-
-
-
-
+    },
+    goToDetallesPelicula(id) {
+      this.$router.push(`/detalles/${id}`);
+    },
+    goToDetallesSeries(id) {
+      this.$router.push(`/detallesserie/${id}`);
     }
   }
 };
@@ -335,5 +328,4 @@ body {
 h4 {
   color: #fff;
 }
-
 </style>

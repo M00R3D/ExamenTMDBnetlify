@@ -171,7 +171,7 @@
   };
   
   const loadSeriesDetails = (seriesId) => {
-    window.location.href = `/DetallesSeries?seriesId=${seriesId}`;
+    window.location.href = `/detallesserie/${seriesId}`;
   };
   
   const loadSeasonDetails = (seriesId, seasonNumber) => {

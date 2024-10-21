@@ -51,28 +51,41 @@
         </div>
       </div>
     </nav>
+
+    <input v-model="searchQuery" placeholder="Buscar..." @input="searchContent" />
+    <div v-if="searchResults.length">
+      <ul>
+        <li v-for="result in searchResults" :key="result.id" @click="goToDetails(result)">
+          <span>{{ result.name || result.title }}</span>
+        </li>
+      </ul>
+    </div>
+
     <div class="container mt-4">
       <h2>Tendencias</h2>
       <div class="movie-section" v-if="movies.trending.length">
-        <div v-for="movie in movies.trending" :key="movie.id" @click="goToDetails(movie.id)">
+        <div v-for="movie in movies.trending" :key="movie.id" @click="goToDetails(movie)">
           <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster" />
           <p class="movie-title">{{ movie.title }}</p>
         </div>
       </div>
+
       <h2>Lo más popular</h2>
       <div class="movie-section" v-if="movies.popular.length">
-        <div v-for="movie in movies.popular" :key="movie.id" @click="goToDetails(movie.id)">
+        <div v-for="movie in movies.popular" :key="movie.id" @click="goToDetails(movie)">
           <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster" />
           <p class="movie-title">{{ movie.title }}</p>
         </div>
       </div>
+
       <h2>Ver gratis</h2>
       <div class="movie-section" v-if="movies.free.length">
-        <div v-for="movie in movies.free" :key="movie.id" @click="goToDetails(movie.id)">
+        <div v-for="movie in movies.free" :key="movie.id" @click="goToDetails(movie)">
           <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster" />
           <p class="movie-title">{{ movie.title }}</p>
         </div>
       </div>
+
       <h2>Series o TV</h2>
       <div class="movie-section" v-if="movies.series.length">
         <div v-for="series in movies.series" :key="series.id" @click="goToSeriesDetails(series.id)">
@@ -90,6 +103,8 @@ import axios from 'axios';
 import { useRouter } from 'vue-router';
 
 const username = ref('');
+const searchQuery = ref('');
+const searchResults = ref([]);
 const movies = ref({
   trending: [],
   popular: [],
@@ -119,17 +134,35 @@ const fetchMovies = (category, endpoint) => {
     });
 };
 
-const logout = () => {
-  localStorage.removeItem('sessionId');
-  router.push({ name: 'Login' });
+const searchContent = () => {
+  if (searchQuery.value.length > 2) {
+    axios
+      .get(`https://api.themoviedb.org/3/search/multi?api_key=06524ff7325ce43f515a20c7b39d58a7&query=${searchQuery.value}`)
+      .then((response) => {
+        searchResults.value = response.data.results.filter(
+          result => result.media_type === 'movie' || result.media_type === 'tv'
+        );
+      });
+  } else {
+    searchResults.value = [];
+  }
 };
 
-const goToDetails = (movieId) => {
-  router.push({ name: 'DetallesPelicula', params: { movieId } });
+const goToDetails = (result) => {
+  if (result.media_type === 'movie') {
+    router.push(`/detalles/${result.id}`);
+  } else if (result.media_type === 'tv') {
+    router.push(`/detallesserie/${result.id}`);
+  }
 };
 
 const goToSeriesDetails = (seriesId) => {
   router.push({ name: 'DetallesSeries', params: { seriesId } });
+};
+
+const logout = () => {
+  localStorage.removeItem('sessionId');
+  router.push({ name: 'Login' });
 };
 </script>
 
@@ -160,6 +193,28 @@ const goToSeriesDetails = (seriesId) => {
   color: #fff;
 }
 
+input {
+  padding: 8px;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  padding: 8px;
+  background: #f0f0f0;
+  margin-bottom: 4px;
+  cursor: pointer;
+}
+
+li:hover {
+  background: #e0e0e0;
+}
+
 h2 {
   font-size: 1.8rem;
   color: #f39c12;
@@ -180,17 +235,17 @@ h2 {
   overflow-x: auto;
   gap: 15px;
   padding: 10px;
-  scrollbar-width: thin; /* Firefox */
+  scrollbar-width: thin;
   scrollbar-color: #f39c12 #2c3e50;
 }
 
 .movie-section::-webkit-scrollbar {
-  height: 8px; /* Chrome, Safari */
+  height: 8px;
 }
 
 .movie-section::-webkit-scrollbar-thumb {
   background-color: #f39c12;
-  border-radius: 10px; 
+  border-radius: 10px;
 }
 
 .movie-section div {
@@ -206,7 +261,7 @@ h2 {
 .movie-title {
   text-align: center;
   font-size: 1rem;
-  color: #0000; 
+  color: #000;
   margin-top: 10px;
 }
 

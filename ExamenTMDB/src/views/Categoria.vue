@@ -12,10 +12,9 @@
           <h4 class="text-center">Filtros</h4>
           <div class="filter-section">
             <h5>Ordenar por</h5>
-            <select class="form-select" v-model="sortOption" @change="sortMovies">
+            <select class="form-select" v-model="sortOption" @change="sortContent">
               <option selected>Seleccionar...</option>
               <option value="popularity">Popularidad</option>
-              <option value="release_date">Fecha de Estreno</option>
               <option value="vote_average">Mejor Puntuación</option>
             </select>
 
@@ -170,6 +169,7 @@ export default {
           .then(response => {
             this.series = response.data.results || [];
             this.filteredSeries = this.series.slice(0, this.limit); 
+            this.filterContent();
           })
           .catch(error => {
             console.error('Error al obtener datos de TMDb:', error);
@@ -262,11 +262,10 @@ export default {
                matchesKeywords;
       }).slice(0, this.limit);
     },
-    sortMovies() {
+    sortContent() {
       if (this.sortOption) {
-        this.filteredMovies.sort((a, b) => {
-          return b[this.sortOption] - a[this.sortOption];
-        });
+        this.filteredMovies.sort((a, b) => b[this.sortOption] - a[this.sortOption]);
+        this.filteredSeries.sort((a, b) => b[this.sortOption] - a[this.sortOption]);
       }
     },
     goToDetallesPelicula(id) {

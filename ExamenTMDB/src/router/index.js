@@ -5,6 +5,7 @@ import DetalleArtista from '../views/DetalleArtista.vue';
 import Categoria from '../views/Categoria.vue';
 import Login from '../views/Login.vue';
 import Authenticated from '../views/Authenticated.vue';
+import DetallesSeries from '../views/DetallesSeries.vue';
 
 const isAuthenticated = () => {
   return !!localStorage.getItem('sessionId');
@@ -25,6 +26,11 @@ const routes = [
     path: '/detalles/:movieId', 
     name: 'DetallesPelicula', 
     component: DetallesPelicula 
+  },
+  { 
+    path: '/detallesserie/:seriesId', 
+    name: 'DetallesSeries', 
+    component: DetallesSeries 
   },
   {
     path: '/categoria', 

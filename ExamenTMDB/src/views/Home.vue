@@ -1,4 +1,4 @@
-<template>
+<template> 
   <div>
     <nav class="navbar navbar-expand-lg navbar-custom">
       <div class="container-fluid">
@@ -91,9 +91,9 @@
       </div>
       <h2>Series o TV</h2>
       <div class="movie-section" v-if="movies.series.length">
-        <div v-for="movie in movies.series" :key="movie.id" @click="goToDetails(movie.id)">
-          <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster" />
-          <p>{{ movie.title }}</p>
+        <div v-for="series in movies.series" :key="series.id" @click="goToSeriesDetails(series.id)">
+          <img :src="'https://image.tmdb.org/t/p/w500' + series.poster_path" :alt="series.name" class="poster" />
+          <p>{{ series.name }}</p>
         </div>
       </div>
     </div>
@@ -142,6 +142,10 @@ const logout = () => {
 
 const goToDetails = (movieId) => {
   router.push({ name: 'DetallesPelicula', params: { movieId } });
+};
+
+const goToSeriesDetails = (seriesId) => {
+  router.push({ name: 'DetallesSeries', params: { seriesId } });
 };
 </script>
 

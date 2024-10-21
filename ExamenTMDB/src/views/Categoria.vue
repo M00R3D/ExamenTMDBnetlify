@@ -279,6 +279,14 @@ export default {
           ? serie.genre_ids.some(genreId => this.selectedGenres.includes(genreId))
           : true;
 
+        const matchesPlatforms = this.selectedPlatforms.length
+          ? serie.platforms && serie.platforms.some(platformId => this.selectedPlatforms.includes(platformId))
+          : true;
+
+        const matchesCertification = this.selectedCertification
+          ? serie.certification === this.selectedCertification
+          : true;
+
         const matchesLanguage = this.selectedLanguage
           ? serie.original_language === this.selectedLanguage
           : true;
@@ -294,6 +302,8 @@ export default {
           : true;
 
         return matchesGenres &&
+               matchesPlatforms &&
+               matchesCertification &&
                matchesLanguage &&
                matchesUserScore &&
                matchesMinVotes &&

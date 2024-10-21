@@ -212,7 +212,7 @@ h2 {
 .movie-title {
   text-align: center;
   font-size: 1rem;
-  color: #00000; 
+  color: #0000; 
   margin-top: 10px;
 }
 

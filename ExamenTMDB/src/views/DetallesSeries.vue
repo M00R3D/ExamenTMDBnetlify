@@ -34,39 +34,68 @@
       </nav>
   
       <div class="container mt-4">
+        <button class="btn btn-secondary mb-4" @click="goHome">Regresar a Home</button>
         <h2>Detalles de la Serie</h2>
-        <div v-if="series">
-          <h3>{{ series.name }}</h3>
-          <img :src="'https://image.tmdb.org/t/p/w500' + series.poster_path" :alt="series.name" class="img-fluid" />
-          <p><strong>Descripción:</strong> {{ series.overview }}</p>
-          <p><strong>Categorías:</strong> <span v-for="(genre, index) in series.genres" :key="index">{{ genre.name }}<span v-if="index < series.genres.length - 1">, </span></span></p>
-          <p><strong>Rating:</strong> {{ series.vote_average }}</p>
-  
-          <h4>Reparto</h4>
-          <ul>
-            <li v-for="actor in cast" :key="actor.id">{{ actor.name }}</li>
-          </ul>
-  
-          <h4>Palabras clave</h4>
-          <ul>
-            <li v-for="keyword in keywords" :key="keyword.id">{{ keyword.name }}</li>
-          </ul>
-  
-          <h4>Trailer</h4>
-          <div v-if="trailer">
-            <iframe :src="'https://www.youtube.com/embed/' + trailer.key" width="560" height="315" frameborder="0" allowfullscreen></iframe>
-          </div>
-  
-          <h4>Recomendaciones</h4>
-          <div class="movie-section">
-            <div v-for="recommended in recommendations" :key="recommended.id">
-              <img :src="'https://image.tmdb.org/t/p/w500' + recommended.poster_path" :alt="recommended.name" class="poster" />
-              <p>{{ recommended.name }}</p>
-            </div>
-          </div>
+        <div v-if="loading">
+          <p>Cargando detalles...</p>
+        </div>
+        <div v-else-if="error">
+          <p>Error al cargar detalles: {{ error.message }}</p>
         </div>
         <div v-else>
-          <p>Cargando detalles...</p>
+          <div v-if="series">
+            <div class="row">
+              <div class="col-md-4">
+                <img :src="'https://image.tmdb.org/t/p/w500' + series.poster_path" :alt="series.name" class="poster img-fluid" />
+              </div>
+              <div class="col-md-8">
+                <h3>{{ series.name }}</h3>
+                <p><strong>Descripción:</strong> {{ series.overview }}</p>
+                <p><strong>Categorías:</strong> 
+                  <span v-for="(genre, index) in series.genres" :key="index">{{ genre.name }}<span v-if="index < series.genres.length - 1">, </span></span>
+                </p>
+                <p><strong>Rating:</strong> {{ series.vote_average }}</p>
+              </div>
+            </div>
+  
+            <h4 class="mt-4">Reparto</h4>
+            <div class="row" v-if="cast && cast.length">
+              <div class="col-md-3" v-for="actor in cast" :key="actor.id">
+                <div class="card">
+                  <img :src="'https://image.tmdb.org/t/p/w500' + actor.profile_path" :alt="actor.name" class="card-img-top" v-if="actor.profile_path" />
+                  <div class="card-body">
+                    <p class="card-text">{{ actor.name }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-else>
+              <p>No se encontraron actores.</p>
+            </div>
+  
+            <h4 class="mt-4">Palabras clave</h4>
+            <ul v-if="keywords && keywords.length">
+              <li v-for="keyword in keywords" :key="keyword.id">{{ keyword.name }}</li>
+            </ul>
+            <div v-else>
+              <p>No se encontraron palabras clave.</p>
+            </div>
+  
+            <h4 class="mt-4">Recomendaciones</h4>
+            <div class="row" v-if="recommendations && recommendations.length">
+              <div class="col-md-3" v-for="recommended in recommendations" :key="recommended.id" @click="loadSeriesDetails(recommended.id)" style="cursor: pointer;">
+                <div class="card">
+                  <img :src="'https://image.tmdb.org/t/p/w500' + recommended.poster_path" :alt="recommended.name" class="card-img-top" />
+                  <div class="card-body">
+                    <p class="card-text">{{ recommended.name }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-else>
+              <p>No se encontraron recomendaciones.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -82,15 +111,18 @@
   const recommendations = ref([]);
   const cast = ref([]);
   const keywords = ref([]);
-  
+  const loading = ref(true);
+  const error = ref(null);
   const route = useRoute();
   
-  onMounted(() => {
+  onMounted(async () => {
     const seriesId = route.params.seriesId;
-    if (seriesId) {
-      fetchSeriesDetails(seriesId);
-    } else {
-      console.error('No se encontró el ID de la serie en la URL.');
+    try {
+      await fetchSeriesDetails(seriesId);
+    } catch (err) {
+      error.value = err;
+    } finally {
+      loading.value = false;
     }
   });
   
@@ -101,16 +133,23 @@
       const creditsResponse = await axios.get(`https://api.themoviedb.org/3/tv/${seriesId}/credits?api_key=${apiKey}&language=es`);
       const keywordsResponse = await axios.get(`https://api.themoviedb.org/3/tv/${seriesId}/keywords?api_key=${apiKey}&language=es`);
       const recommendationsResponse = await axios.get(`https://api.themoviedb.org/3/tv/${seriesId}/recommendations?api_key=${apiKey}&language=es`);
-      const videoResponse = await axios.get(`https://api.themoviedb.org/3/tv/${seriesId}/videos?api_key=${apiKey}&language=es`);
       
       series.value = seriesResponse.data;
       cast.value = creditsResponse.data.cast;
       keywords.value = keywordsResponse.data.keywords;
-      trailer.value = videoResponse.data.results.find(video => video.type === 'Trailer');
       recommendations.value = recommendationsResponse.data.results;
     } catch (error) {
       console.error('Error al obtener los detalles de la serie:', error);
+      throw new Error('Error al obtener los detalles de la serie');
     }
+  };
+  
+  const goHome = () => {
+    window.location.href = '/';
+  };
+  
+  const loadSeriesDetails = (seriesId) => {
+    window.location.href = `/DetallesSeries?seriesId=${seriesId}`;
   };
   </script>
   
@@ -129,15 +168,18 @@
     height: 40px;
   }
   .poster {
-    width: 150px;
-    margin: 10px;
+    width: 200px;
+    margin: 10px 0;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  h2, h3 {
+    color: #2c3e50;
   }
   .movie-section {
     display: flex;
-    overflow-x: scroll;
-  }
-  h2 {
-    color: #2c3e50;
+    flex-wrap: wrap;
+    gap: 20px;
   }
   </style>
   

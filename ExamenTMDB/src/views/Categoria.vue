@@ -103,12 +103,12 @@ export default {
       sortOption: '',
       selectedPlatforms: [],
       selectedGenres: [],
-      selectedCertification: '', // Nuevo
-      selectedLanguage: '', // Nuevo
-      userScore: 0, // Nuevo
-      minVotes: null, // Nuevo
-      duration: null, // Nuevo
-      keywords: '', // Nuevo
+      selectedCertification: '', 
+      selectedLanguage: '',
+      userScore: 0,
+      minVotes: null,
+      duration: null,
+      keywords: '', 
       limit: 10,
     };
   },
@@ -281,8 +281,8 @@ export default {
       this.$router.push(`/detallesserie/${id}`);
     },
     loadMoreMovies() {
-      this.limit += 10; // Incrementa el límite de películas a mostrar
-      this.filterMovies(); // Filtra de nuevo para incluir más películas
+      this.limit += 10; 
+      this.filterMovies();
     },
   },
 };

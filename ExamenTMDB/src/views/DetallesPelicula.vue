@@ -1,4 +1,4 @@
-}<template>
+<template>
   <div>
     <nav class="navbar navbar-expand-lg navbar-custom">
       <div class="container-fluid">
@@ -8,15 +8,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
             <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Películas
-              </a>
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Películas</a>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="/categoria?categoryId=28">Popular</a></li>
                 <li><a class="dropdown-item" href="/categoria?categoryId=29">En cartelera</a></li>
@@ -25,15 +17,7 @@
               </ul>
             </li>
             <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Series
-              </a>
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Series</a>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="/categoria?categoryId=32">Popular</a></li>
                 <li><a class="dropdown-item" href="/categoria?categoryId=33">En emisión</a></li>
@@ -47,6 +31,7 @@
 
     <div class="container mt-4">
       <button class="btn btn-secondary mb-4" @click="goHome">Regresar a Home</button>
+
       <h2>Detalles de la Película</h2>
 
       <div v-if="movie">
@@ -61,6 +46,7 @@
               <span v-for="(genre, index) in movie.genres" :key="index">{{ genre.name }}<span v-if="index < movie.genres.length - 1">, </span></span>
             </p>
             <p><strong>Rating:</strong> {{ movie.vote_average }}</p>
+            <button class="btn btn-primary mt-2" @click="toggleFavorite(movie.id)">{{ isFavorite(movie.id) ? 'Eliminar de Favoritos' : 'Agregar a Favoritos' }}</button>
           </div>
         </div>
 
@@ -127,6 +113,7 @@ const trailer = ref(null);
 const recommendations = ref([]);
 const cast = ref([]);
 const keywords = ref([]);
+const favorites = ref([]); 
 
 const route = useRoute();
 
@@ -158,10 +145,9 @@ const fetchMovieDetails = async (movieId) => {
   }
 };
 
-// Nueva función para cargar los detalles de la película seleccionada y desplazarse al principio
 const loadMovieDetails = async (recommendedId) => {
   await fetchMovieDetails(recommendedId);
-  window.scrollTo(0, 0); // Desplazarse al inicio de la página
+  window.scrollTo(0, 0); 
 };
 
 const goHome = () => {
@@ -170,6 +156,18 @@ const goHome = () => {
 
 const goToArtistDetails = (artistId) => {
   window.location.href = `/DetalleArtista?artistId=${artistId}`;
+};
+
+const toggleFavorite = (movieId) => {
+  if (favorites.value.includes(movieId)) {
+    favorites.value = favorites.value.filter(id => id !== movieId); 
+  } else {
+    favorites.value.push(movieId); 
+  }
+};
+
+const isFavorite = (movieId) => {
+  return favorites.value.includes(movieId);
 };
 </script>
 
@@ -205,5 +203,12 @@ iframe {
   width: 100%;
   height: 315px;
   border-radius: 10px;
+}
+.btn-primary {
+  background-color: #f39c12;
+  border: none;
+}
+.btn-primary:hover {
+  background-color: #e67e22;
 }
 </style>

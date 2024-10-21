@@ -34,9 +34,6 @@
     </nav>
 
     <div class="container mt-4">
-      <button class="btn btn-secondary mb-4" @click="goHome">Regresar a Home</button>
-      <h2>Detalles del Artista</h2>
-
       <div v-if="artist">
         <div class="row">
           <div class="col-md-4">
@@ -93,14 +90,14 @@ export default {
   },
   mounted() {
     const params = new URLSearchParams(window.location.search);
-    const artistId = params.get('artistId'); // Cambiado para obtener el ID de la URL
+    const artistId = params.get('artistId'); 
     if (artistId) {
       this.loadArtistDetails(artistId);
     }
   },
   methods: {
     async loadArtistDetails(artistId) {
-      const apiKey = '06524ff7325ce43f515a20c7b39d58a7'; // Asegúrate de usar tu API Key real
+      const apiKey = '06524ff7325ce43f515a20c7b39d58a7'; 
       try {
         const response = await axios.get(`https://api.themoviedb.org/3/person/${artistId}?api_key=${apiKey}&language=es`);
         this.artist = response.data;
@@ -116,10 +113,10 @@ export default {
       }
     },
     goHome() {
-      this.$router.push('/home'); // Cambiado para usar Vue Router
+      this.$router.push('/home'); 
     },
     goToMovieDetails(movieId) {
-      this.$router.push(`/detalles/${movieId}`); // Cambiado para usar Vue Router
+      this.$router.push(`/detalles/${movieId}`); 
     }
   }
 };

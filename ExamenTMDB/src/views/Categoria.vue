@@ -2,7 +2,7 @@
   <div>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container-fluid">
-        <a class="navbar-brand btn-home" href="/">Atras</a>
+        <a class="navbar-brand btn-home" href="/">Atrás</a>
       </div>
     </nav>
     <div class="container mt-4">
@@ -11,7 +11,7 @@
           <h4 class="text-center">Filtros</h4>
           <div class="filter-section">
             <h5>Ordenar por</h5>
-            <select class="form-select" v-model="sortOption">
+            <select class="form-select" v-model="sortOption" @change="sortMovies">
               <option selected>Seleccionar...</option>
               <option value="popularity">Popularidad</option>
               <option value="release_date">Fecha de Estreno</option>
@@ -20,29 +20,16 @@
 
             <h5 class="mt-3">Dónde se puede ver</h5>
             <ul class="list-group mb-3">
-              <li class="list-group-item"><input type="checkbox"> Netflix</li>
-              <li class="list-group-item"><input type="checkbox"> Amazon Prime</li>
-              <li class="list-group-item"><input type="checkbox"> Disney+</li>
-              <li class="list-group-item"><input type="checkbox"> HBO Max</li>
-              <li class="list-group-item"><input type="checkbox"> Hulu</li>
+              <li class="list-group-item" v-for="platform in platforms" :key="platform.id">
+                <input type="checkbox" :value="platform.id" v-model="selectedPlatforms" @change="filterMovies"> {{ platform.name }}
+              </li>
             </ul>
-
-            <h5 class="mt-3">Disponibilidad</h5>
-            <div>
-              <input type="checkbox" id="available" value="available">
-              <label for="available">Disponible</label>
-            </div>
-
-            <h5 class="mt-3">Fechas de Estreno</h5>
-            <input type="date" class="form-control mb-2">
 
             <h5 class="mt-3">Géneros</h5>
             <ul class="list-group">
-              <li class="list-group-item"><input type="checkbox"> Acción</li>
-              <li class="list-group-item"><input type="checkbox"> Comedia</li>
-              <li class="list-group-item"><input type="checkbox"> Drama</li>
-              <li class="list-group-item"><input type="checkbox"> Terror</li>
-              <li class="list-group-item"><input type="checkbox"> Fantasía</li>
+              <li class="list-group-item" v-for="genre in genres" :key="genre.id">
+                <input type="checkbox" :value="genre.id" v-model="selectedGenres" @change="filterMovies"> {{ genre.name }}
+              </li>
             </ul>
 
             <h5 class="mt-3">Certificación</h5>
@@ -79,14 +66,14 @@
         </div>
         <div class="col-md-9">
           <h2>{{ categoryName }}</h2>
-          <div class="movie-section" v-if="movies.length">
-            <div class="movie-card" v-for="movie in movies" :key="movie.id" @click="goToDetallesPelicula(movie.id)" style="cursor: pointer;">
+
+          <div class="movie-section" v-if="filteredMovies.length">
+            <div class="movie-card" v-for="movie in filteredMovies" :key="movie.id" @click="goToDetallesPelicula(movie.id)" style="cursor: pointer;">
               <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster">
               <p>{{ movie.title }}</p>
             </div>
           </div>
 
-          <h2></h2>
           <div class="movie-section" v-if="series.length">
             <div class="movie-card" v-for="serie in series" :key="serie.id" @click="goToDetallesSeries(serie.id)" style="cursor: pointer;">
               <img :src="'https://image.tmdb.org/t/p/w500' + serie.poster_path" :alt="serie.name" class="poster">
@@ -101,21 +88,26 @@
 
 <script>
 import axios from 'axios';
-import { useRouter } from 'vue-router';
 
 export default {
   data() {
     return {
       movies: [],
       series: [],
+      filteredMovies: [],
+      genres: [],
+      platforms: [],
       categoryName: '',
-      sortOption: ''
+      sortOption: '',
+      selectedPlatforms: [],
+      selectedGenres: [],
     };
   },
   mounted() {
     const urlParams = new URLSearchParams(window.location.search);
     const categoryId = urlParams.get('categoryId');
     if (categoryId) {
+      this.fetchGenres();
       this.fetchMovies(categoryId);
       this.fetchSeries(categoryId);
       this.setCategoryName(categoryId);
@@ -124,6 +116,16 @@ export default {
     }
   },
   methods: {
+    fetchGenres() {
+      const apiKey = '06524ff7325ce43f515a20c7b39d58a7';
+      axios.get(`https://api.themoviedb.org/3/genre/movie/list?api_key=${apiKey}&language=es`)
+        .then(response => {
+          this.genres = response.data.genres;
+        })
+        .catch(error => {
+          console.error('Error al obtener géneros:', error);
+        });
+    },
     fetchMovies(categoryId) {
       const apiKey = '06524ff7325ce43f515a20c7b39d58a7';
       let endpoint = '';
@@ -147,6 +149,8 @@ export default {
         axios.get(`https://api.themoviedb.org/3${endpoint}?api_key=${apiKey}&language=es`)
           .then(response => {
             this.movies = response.data.results || [];
+            this.filteredMovies = this.movies; 
+            this.filterMovies(); 
           })
           .catch(error => {
             console.error('Error al obtener datos de TMDb:', error);
@@ -208,14 +212,32 @@ export default {
       }
     },
     filterMovies() {
+      this.filteredMovies = this.movies.filter(movie => {
+        const matchesGenres = this.selectedGenres.length
+          ? movie.genre_ids.some(genreId => this.selectedGenres.includes(genreId))
+          : true;
+
+        const matchesPlatforms = this.selectedPlatforms.length
+          ? this.selectedPlatforms.some(platformId => movie.platforms && movie.platforms.includes(platformId))
+          : true;
+
+        return matchesGenres && matchesPlatforms;
+      });
+    },
+    sortMovies() {
+      if (this.sortOption) {
+        this.filteredMovies.sort((a, b) => {
+          return b[this.sortOption] - a[this.sortOption];
+        });
+      }
     },
     goToDetallesPelicula(id) {
       this.$router.push(`/detalles/${id}`);
     },
     goToDetallesSeries(id) {
       this.$router.push(`/detallesserie/${id}`);
-    }
-  }
+    },
+  },
 };
 </script>
 

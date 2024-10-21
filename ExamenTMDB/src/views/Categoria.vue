@@ -22,19 +22,19 @@
             <h5 class="mt-3">Dónde se puede ver</h5>
             <ul class="list-group mb-3">
               <li class="list-group-item" v-for="platform in platforms" :key="platform.id">
-                <input type="checkbox" :value="platform.id" v-model="selectedPlatforms" @change="filterMovies"> {{ platform.name }}
+                <input type="checkbox" :value="platform.id" v-model="selectedPlatforms" @change="filterContent"> {{ platform.name }}
               </li>
             </ul>
 
             <h5 class="mt-3">Géneros</h5>
             <ul class="list-group">
               <li class="list-group-item" v-for="genre in genres" :key="genre.id">
-                <input type="checkbox" :value="genre.id" v-model="selectedGenres" @change="filterMovies"> {{ genre.name }}
+                <input type="checkbox" :value="genre.id" v-model="selectedGenres" @change="filterContent"> {{ genre.name }}
               </li>
             </ul>
 
             <h5 class="mt-3">Certificación</h5>
-            <select class="form-select mb-2" v-model="selectedCertification" @change="filterMovies">
+            <select class="form-select mb-2" v-model="selectedCertification" @change="filterContent">
               <option selected>Seleccionar...</option>
               <option value="G">G</option>
               <option value="PG">PG</option>
@@ -43,7 +43,7 @@
             </select>
 
             <h5 class="mt-3">Idioma</h5>
-            <select class="form-select mb-2" v-model="selectedLanguage" @change="filterMovies">
+            <select class="form-select mb-2" v-model="selectedLanguage" @change="filterContent">
               <option selected>Seleccionar...</option>
               <option value="es">Español</option>
               <option value="en">Inglés</option>
@@ -51,18 +51,18 @@
             </select>
 
             <h5 class="mt-3">Puntuación de Usuarios</h5>
-            <input type="range" class="form-range" min="0" max="10" step="1" v-model="userScore" @change="filterMovies">
+            <input type="range" class="form-range" min="0" max="10" step="1" v-model="userScore" @change="filterContent">
 
             <h5 class="mt-3">Votos Mínimos</h5>
-            <input type="number" class="form-control mb-2" placeholder="Número de votos" v-model="minVotes" @change="filterMovies">
+            <input type="number" class="form-control mb-2" placeholder="Número de votos" v-model="minVotes" @change="filterContent">
 
             <h5 class="mt-3">Duración</h5>
-            <input type="number" class="form-control mb-2" placeholder="Minutos" v-model="duration" @change="filterMovies">
+            <input type="number" class="form-control mb-2" placeholder="Minutos" v-model="duration" @change="filterContent">
 
             <h5 class="mt-3">Palabras Clave</h5>
-            <input type="text" class="form-control mb-2" placeholder="Buscar..." v-model="keywords" @input="filterMovies">
+            <input type="text" class="form-control mb-2" placeholder="Buscar..." v-model="keywords" @input="filterContent">
 
-            <button class="btn btn-primary mt-3" type="button" @click="filterMovies">Buscar</button>
+            <button class="btn btn-primary mt-3" type="button" @click="filterContent">Buscar</button>
           </div>
         </div>
         
@@ -76,8 +76,8 @@
           </div>
           <button v-if="moreMoviesAvailable" @click="loadMoreMovies" class="btn btn-primary mt-3">Ver Más Películas</button>
 
-          <div class="movie-section" v-if="series.length">
-            <div class="movie-card" v-for="serie in series" :key="serie.id" @click="goToDetallesSeries(serie.id)" style="cursor: pointer;">
+          <div class="movie-section" v-if="filteredSeries.length">
+            <div class="movie-card" v-for="serie in filteredSeries" :key="serie.id" @click="goToDetallesSeries(serie.id)" style="cursor: pointer;">
               <img :src="'https://image.tmdb.org/t/p/w500' + serie.poster_path" :alt="serie.name" class="poster">
               <p>{{ serie.name }}</p>
             </div>
@@ -97,6 +97,7 @@ export default {
       movies: [],
       series: [],
       filteredMovies: [],
+      filteredSeries: [],
       genres: [],
       platforms: [],
       categoryName: '',
@@ -164,7 +165,7 @@ export default {
           .then(response => {
             this.movies = response.data.results || [];
             this.filteredMovies = this.movies.slice(0, this.limit); 
-            this.filterMovies(); 
+            this.filterContent(); 
           })
           .catch(error => {
             console.error('Error al obtener datos de TMDb:', error);
@@ -191,6 +192,7 @@ export default {
         axios.get(`https://api.themoviedb.org/3${endpoint}?api_key=${apiKey}&language=es`)
           .then(response => {
             this.series = response.data.results || [];
+            this.filteredSeries = this.series.slice(0, this.limit); 
           })
           .catch(error => {
             console.error('Error al obtener datos de TMDb:', error);
@@ -209,7 +211,7 @@ export default {
           this.categoryName = 'Próximamente';
           break;
         case '31':
-          this.categoryName = 'Mejor Puntuadas';
+          this.categoryName = 'Mejores Películas';
           break;
         case '32':
           this.categoryName = 'Series Populares';
@@ -218,12 +220,16 @@ export default {
           this.categoryName = 'Series en Emisión';
           break;
         case '34':
-          this.categoryName = 'Series Mejor Puntuadas';
+          this.categoryName = 'Mejores Series';
           break;
         default:
           this.categoryName = 'Categoría Desconocida';
           break;
       }
+    },
+    filterContent() {
+      this.filterMovies();
+      this.filterSeries();
     },
     filterMovies() {
       this.filteredMovies = this.movies.filter(movie => {
@@ -267,6 +273,33 @@ export default {
                matchesKeywords;
       }).slice(0, this.limit);
     },
+    filterSeries() {
+      this.filteredSeries = this.series.filter(serie => {
+        const matchesGenres = this.selectedGenres.length
+          ? serie.genre_ids.some(genreId => this.selectedGenres.includes(genreId))
+          : true;
+
+        const matchesLanguage = this.selectedLanguage
+          ? serie.original_language === this.selectedLanguage
+          : true;
+
+        const matchesUserScore = serie.vote_average >= this.userScore;
+
+        const matchesMinVotes = this.minVotes
+          ? serie.vote_count >= this.minVotes
+          : true;
+
+        const matchesKeywords = this.keywords
+          ? serie.name.toLowerCase().includes(this.keywords.toLowerCase())
+          : true;
+
+        return matchesGenres &&
+               matchesLanguage &&
+               matchesUserScore &&
+               matchesMinVotes &&
+               matchesKeywords;
+      }).slice(0, this.limit);
+    },
     sortMovies() {
       if (this.sortOption) {
         this.filteredMovies.sort((a, b) => {
@@ -282,7 +315,7 @@ export default {
     },
     loadMoreMovies() {
       this.limit += 10; 
-      this.filterMovies();
+      this.filterContent(); 
     },
   },
 };

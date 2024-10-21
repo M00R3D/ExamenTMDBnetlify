@@ -33,31 +33,11 @@
               </li>
             </ul>
 
-            <h5 class="mt-3">Certificación</h5>
-            <select class="form-select mb-2" v-model="selectedCertification" @change="filterContent">
-              <option selected>Seleccionar...</option>
-              <option value="G">G</option>
-              <option value="PG">PG</option>
-              <option value="PG-13">PG-13</option>
-              <option value="R">R</option>
-            </select>
-
-            <h5 class="mt-3">Idioma</h5>
-            <select class="form-select mb-2" v-model="selectedLanguage" @change="filterContent">
-              <option selected>Seleccionar...</option>
-              <option value="es">Español</option>
-              <option value="en">Inglés</option>
-              <option value="fr">Francés</option>
-            </select>
-
             <h5 class="mt-3">Puntuación de Usuarios</h5>
             <input type="range" class="form-range" min="0" max="10" step="1" v-model="userScore" @change="filterContent">
 
             <h5 class="mt-3">Votos Mínimos</h5>
             <input type="number" class="form-control mb-2" placeholder="Número de votos" v-model="minVotes" @change="filterContent">
-
-            <h5 class="mt-3">Duración</h5>
-            <input type="number" class="form-control mb-2" placeholder="Minutos" v-model="duration" @change="filterContent">
 
             <h5 class="mt-3">Palabras Clave</h5>
             <input type="text" class="form-control mb-2" placeholder="Buscar..." v-model="keywords" @input="filterContent">
@@ -104,12 +84,9 @@ export default {
       sortOption: '',
       selectedPlatforms: [],
       selectedGenres: [],
-      selectedCertification: '', 
-      selectedLanguage: '',
       userScore: 0,
       minVotes: null,
-      duration: null,
-      keywords: '', 
+      keywords: '',
       limit: 10,
     };
   },
@@ -241,22 +218,10 @@ export default {
           ? movie.platforms && movie.platforms.some(platformId => this.selectedPlatforms.includes(platformId))
           : true;
 
-        const matchesCertification = this.selectedCertification
-          ? movie.certification === this.selectedCertification
-          : true;
-
-        const matchesLanguage = this.selectedLanguage
-          ? movie.original_language === this.selectedLanguage
-          : true;
-
         const matchesUserScore = movie.vote_average >= this.userScore;
 
         const matchesMinVotes = this.minVotes
           ? movie.vote_count >= this.minVotes
-          : true;
-
-        const matchesDuration = this.duration
-          ? movie.runtime <= this.duration
           : true;
 
         const matchesKeywords = this.keywords
@@ -265,11 +230,8 @@ export default {
 
         return matchesGenres &&
                matchesPlatforms &&
-               matchesCertification &&
-               matchesLanguage &&
                matchesUserScore &&
                matchesMinVotes &&
-               matchesDuration &&
                matchesKeywords;
       }).slice(0, this.limit);
     },
@@ -281,14 +243,6 @@ export default {
 
         const matchesPlatforms = this.selectedPlatforms.length
           ? serie.platforms && serie.platforms.some(platformId => this.selectedPlatforms.includes(platformId))
-          : true;
-
-        const matchesCertification = this.selectedCertification
-          ? serie.certification === this.selectedCertification
-          : true;
-
-        const matchesLanguage = this.selectedLanguage
-          ? serie.original_language === this.selectedLanguage
           : true;
 
         const matchesUserScore = serie.vote_average >= this.userScore;
@@ -303,8 +257,6 @@ export default {
 
         return matchesGenres &&
                matchesPlatforms &&
-               matchesCertification &&
-               matchesLanguage &&
                matchesUserScore &&
                matchesMinVotes &&
                matchesKeywords;

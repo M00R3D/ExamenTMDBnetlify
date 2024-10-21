@@ -39,12 +39,6 @@
                 <li><a class="dropdown-item" href="/categoria?categoryId=34">Mejor puntuadas</a></li>
               </ul>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Cuenta</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Más</a>
-            </li>
           </ul>
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">

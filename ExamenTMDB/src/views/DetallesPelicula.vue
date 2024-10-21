@@ -2,7 +2,7 @@
   <div>
     <nav class="navbar navbar-expand-lg navbar-custom">
       <div class="container-fluid">
-        <a class="navbar-brand" href="/">
+        <a class="navbar-brand" href="/"> 
           <img src="https://w7.pngwing.com/pngs/162/500/png-transparent-popcorn-popcorn-box-food.png" alt="Logo" class="logo" />
         </a>
         <div class="collapse navbar-collapse" id="navbarNav">
@@ -46,6 +46,8 @@
               <span v-for="(genre, index) in movie.genres" :key="index">{{ genre.name }}<span v-if="index < movie.genres.length - 1">, </span></span>
             </p>
             <p><strong>Rating:</strong> {{ movie.vote_average }}</p>
+            <p><strong>Fecha de estreno:</strong> {{ movie.release_date }}</p>
+            <p><strong>Duración:</strong> {{ movie.runtime }} minutos</p>
             <button class="btn btn-primary mt-2" @click="toggleFavorite(movie.id)">{{ isFavorite(movie.id) ? 'Eliminar de Favoritos' : 'Agregar a Favoritos' }}</button>
           </div>
         </div>
@@ -59,18 +61,20 @@
         </div>
 
         <h4 class="mt-4">Reparto</h4>
-        <div class="row" v-if="cast.length">
-          <div class="col-md-3" v-for="actor in cast" :key="actor.id" @click="goToArtistDetails(actor.id)" style="cursor: pointer;">
-            <div class="card">
-              <img :src="'https://image.tmdb.org/t/p/w500' + actor.profile_path" :alt="actor.name" class="card-img-top" v-if="actor.profile_path">
-              <div class="card-body">
-                <p class="card-text">{{ actor.name }}</p>
+        <div class="scroll-container">
+          <div class="actor-scroll" v-if="cast.length">
+            <div v-for="actor in cast" :key="actor.id" @click="goToArtistDetails(actor.id)" style="cursor: pointer;">
+              <div class="card actor-card">
+                <img :src="'https://image.tmdb.org/t/p/w500' + actor.profile_path" :alt="actor.name" class="card-img-top" v-if="actor.profile_path">
+                <div class="card-body">
+                  <p class="card-text">{{ actor.name }}</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div v-else>
-          <p>No se encontraron actores.</p>
+          <div v-else>
+            <p>No se encontraron actores.</p>
+          </div>
         </div>
 
         <h4 class="mt-4">Palabras clave</h4>
@@ -82,18 +86,20 @@
         </div>
 
         <h4 class="mt-4">Recomendaciones</h4>
-        <div class="row" v-if="recommendations.length">
-          <div class="col-md-3" v-for="recommended in recommendations" :key="recommended.id" @click="loadMovieDetails(recommended.id)" style="cursor: pointer;">
-            <div class="card">
-              <img :src="'https://image.tmdb.org/t/p/w500' + recommended.poster_path" :alt="recommended.title" class="card-img-top">
-              <div class="card-body">
-                <p class="card-text">{{ recommended.title }}</p>
+        <div class="scroll-container">
+          <div class="recommendation-scroll" v-if="recommendations.length">
+            <div v-for="recommended in recommendations" :key="recommended.id" @click="loadMovieDetails(recommended.id)" style="cursor: pointer;">
+              <div class="card recommendation-card">
+                <img :src="'https://image.tmdb.org/t/p/w500' + recommended.poster_path" :alt="recommended.title" class="card-img-top">
+                <div class="card-body">
+                  <p class="card-text">{{ recommended.title }}</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div v-else>
-          <p>No se encontraron recomendaciones.</p>
+          <div v-else>
+            <p>No se encontraron recomendaciones.</p>
+          </div>
         </div>
       </div>
       <div v-else>
@@ -194,21 +200,32 @@ const isFavorite = (movieId) => {
 h2, h3 {
   color: #2c3e50;
 }
-.movie-section {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+h4 {
+  color: #34495e;
+}
+.scroll-container {
+  overflow-x: auto; 
+  white-space: nowrap; 
+  padding: 10px 0; 
+}
+.actor-scroll, .recommendation-scroll {
+  display: inline-flex; 
+  gap: 10px; /* Espacio entre los elementos */
+}
+.actor-card, .recommendation-card {
+  width: 100px; 
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+.card-img-top {
+  border-radius: 10px;
+  height: 150px; 
 }
 iframe {
   width: 100%;
   height: 315px;
-  border-radius: 10px;
 }
-.btn-primary {
-  background-color: #f39c12;
-  border: none;
-}
-.btn-primary:hover {
-  background-color: #e67e22;
+.card {
+  margin-bottom: 20px;
 }
 </style>

@@ -62,28 +62,28 @@
       <div class="movie-section" v-if="movies.trending.length">
         <div v-for="movie in movies.trending" :key="movie.id" @click="goToDetails(movie.id)">
           <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster" />
-          <p>{{ movie.title }}</p>
+          <p class="movie-title">{{ movie.title }}</p>
         </div>
       </div>
       <h2>Lo más popular</h2>
       <div class="movie-section" v-if="movies.popular.length">
         <div v-for="movie in movies.popular" :key="movie.id" @click="goToDetails(movie.id)">
           <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster" />
-          <p>{{ movie.title }}</p>
+          <p class="movie-title">{{ movie.title }}</p>
         </div>
       </div>
       <h2>Ver gratis</h2>
       <div class="movie-section" v-if="movies.free.length">
         <div v-for="movie in movies.free" :key="movie.id" @click="goToDetails(movie.id)">
           <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" :alt="movie.title" class="poster" />
-          <p>{{ movie.title }}</p>
+          <p class="movie-title">{{ movie.title }}</p>
         </div>
       </div>
       <h2>Series o TV</h2>
       <div class="movie-section" v-if="movies.series.length">
         <div v-for="series in movies.series" :key="series.id" @click="goToSeriesDetails(series.id)">
           <img :src="'https://image.tmdb.org/t/p/w500' + series.poster_path" :alt="series.name" class="poster" />
-          <p>{{ series.name }}</p>
+          <p class="movie-title">{{ series.name }}</p>
         </div>
       </div>
     </div>
@@ -157,14 +157,13 @@ const goToSeriesDetails = (seriesId) => {
   height: 40px;
 }
 
-
 .dropdown-menu .dropdown-item {
-  color: #000; 
+  color: #000;
 }
 
 .dropdown-menu .dropdown-item:hover {
-  background-color: #f39c12; 
-  color: #fff; 
+  background-color: #f39c12;
+  color: #fff;
 }
 
 h2 {
@@ -188,7 +187,7 @@ h2 {
   gap: 15px;
   padding: 10px;
   scrollbar-width: thin; /* Firefox */
-  scrollbar-color: #f39c12 #2c3e50; 
+  scrollbar-color: #f39c12 #2c3e50;
 }
 
 .movie-section::-webkit-scrollbar {
@@ -210,10 +209,10 @@ h2 {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.movie-section p {
+.movie-title {
   text-align: center;
   font-size: 1rem;
-  color: #ecf0f1;
+  color: #00000; 
   margin-top: 10px;
 }
 

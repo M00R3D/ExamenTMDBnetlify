@@ -1,4 +1,4 @@
-<template> 
+<template>
   <div>
     <nav class="navbar navbar-expand-lg navbar-custom">
       <div class="container-fluid">
@@ -17,21 +17,9 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <span class="nav-link">{{ username ? `Hola, ${username}` : 'Usuario' }}</span>
-            </li>
-            <li class="nav-item">
-              <button class="btn btn-danger" @click="logout">Cerrar sesión</button>
-            </li>
+          <ul class="navbar-nav me-auto">
             <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Películas
               </a>
               <ul class="dropdown-menu">
@@ -42,13 +30,7 @@
               </ul>
             </li>
             <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Series
               </a>
               <ul class="dropdown-menu">
@@ -62,6 +44,14 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">Más</a>
+            </li>
+          </ul>
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <span class="nav-link">{{ username ? `Hola, ${username}` : 'Usuario' }}</span>
+            </li>
+            <li class="nav-item">
+              <button class="btn btn-danger" @click="logout">Cerrar sesión</button>
             </li>
           </ul>
         </div>
@@ -153,26 +143,85 @@ const goToSeriesDetails = (seriesId) => {
 .navbar-custom {
   background-color: #2c3e50;
 }
+
 .navbar-custom a {
   color: #ecf0f1;
   margin-right: 20px;
 }
+
 .navbar-custom a:hover {
   color: #f39c12;
 }
+
 .logo {
   height: 40px;
 }
+
+
+.dropdown-menu .dropdown-item {
+  color: #000; 
+}
+
+.dropdown-menu .dropdown-item:hover {
+  background-color: #f39c12; 
+  color: #fff; 
+}
+
+h2 {
+  font-size: 1.8rem;
+  color: #f39c12;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+  margin-bottom: 20px;
+}
+
 .poster {
   width: 150px;
-  margin: 10px;
-  cursor: pointer; 
+  height: 225px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
+
 .movie-section {
   display: flex;
-  overflow-x: scroll;
+  overflow-x: auto;
+  gap: 15px;
+  padding: 10px;
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #f39c12 #2c3e50; 
 }
-h2 {
-  color: #2c3e50;
+
+.movie-section::-webkit-scrollbar {
+  height: 8px; /* Chrome, Safari */
+}
+
+.movie-section::-webkit-scrollbar-thumb {
+  background-color: #f39c12;
+  border-radius: 10px; 
+}
+
+.movie-section div {
+  position: relative;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.movie-section div:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.movie-section p {
+  text-align: center;
+  font-size: 1rem;
+  color: #ecf0f1;
+  margin-top: 10px;
+}
+
+.container {
+  padding: 20px;
+}
+
+body {
+  background: linear-gradient(135deg, #2c3e50, #34495e);
 }
 </style>

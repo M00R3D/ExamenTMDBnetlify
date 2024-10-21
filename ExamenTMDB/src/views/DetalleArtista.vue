@@ -3,7 +3,7 @@
     <nav class="navbar navbar-expand-lg navbar-custom">
       <div class="container-fluid">
         <router-link to="/home" class="navbar-brand">
-          <img src="@/assets/logo.png" alt="Logo" class="logo">
+          <img src="C:\Users\pc\Documents\EXAMEN_UNIDAD_3\ExamenTMDB\src\views\logo.png" alt="Logo" class="logo">
         </router-link>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">

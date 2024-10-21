@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/Home.vue';
 import DetallesPelicula from '../views/DetallesPelicula.vue';
+import DetalleArtista from '../views/DetalleArtista.vue';
 import Categoria from '../views/Categoria.vue';
 import Login from '../views/Login.vue';
 import Authenticated from '../views/Authenticated.vue';
@@ -21,7 +22,7 @@ const routes = [
     component: Authenticated 
   },
   { 
-    path: '/detallespelicula', 
+    path: '/detalles/:movieId', 
     name: 'DetallesPelicula', 
     component: DetallesPelicula 
   },
@@ -34,9 +35,7 @@ const routes = [
     path: '/detalleArtista',
     name: 'DetalleArtista',
     component: DetalleArtista 
-  }
-  
-  ,
+  },
   { 
     path: '/', 
     name: 'Home', 
@@ -50,11 +49,10 @@ const routes = [
     }
   }
 ];
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.VITE_BASE_URL),
   routes
 });
 
 export default router;
-
-

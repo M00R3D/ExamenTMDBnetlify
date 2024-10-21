@@ -64,7 +64,6 @@
               <a class="nav-link" href="#">Más</a>
             </li>
           </ul>
-          <!-- <img src="buscar.png" alt="Buscar" class="search-icon ms-auto" /> -->
         </div>
       </div>
     </nav>
@@ -107,10 +106,6 @@ import axios from 'axios';
 import { useRouter } from 'vue-router';
 
 const username = ref('');
-
-onMounted(() => {
-  username.value = localStorage.getItem('username');
-});
 const movies = ref({
   trending: [],
   popular: [],
@@ -120,12 +115,8 @@ const movies = ref({
 
 const router = useRouter();
 
-const logout = () => {
-  localStorage.removeItem('sessionId');
-  router.push({ name: 'Login' });
-};
-
 onMounted(() => {
+  username.value = localStorage.getItem('username');
   fetchMovies('trending', '/trending/movie/day');
   fetchMovies('popular', '/movie/popular');
   fetchMovies('free', '/movie/top_rated');
@@ -144,8 +135,13 @@ const fetchMovies = (category, endpoint) => {
     });
 };
 
+const logout = () => {
+  localStorage.removeItem('sessionId');
+  router.push({ name: 'Login' });
+};
+
 const goToDetails = (movieId) => {
-  router.push({ name: 'MovieDetails', params: { movieId } });
+  router.push({ name: 'DetallesPelicula', params: { movieId } });
 };
 </script>
 
@@ -162,10 +158,6 @@ const goToDetails = (movieId) => {
 }
 .logo {
   height: 40px;
-}
-.search-icon {
-  height: 20px;
-  cursor: pointer;
 }
 .poster {
   width: 150px;

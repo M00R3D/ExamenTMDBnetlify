@@ -69,6 +69,7 @@
           <p class="movie-title">{{ movie.title }}</p>
         </div>
       </div>
+      <button v-if="trendingPage < totalPages.trending" @click="loadMore('trending')" class="btn btn-primary">Cargar más</button>
 
       <h2>Lo más popular</h2>
       <div class="movie-section" v-if="movies.popular.length">
@@ -77,6 +78,7 @@
           <p class="movie-title">{{ movie.title }}</p>
         </div>
       </div>
+      <button v-if="popularPage < totalPages.popular" @click="loadMore('popular')" class="btn btn-primary">Cargar más</button>
 
       <h2>Ver gratis</h2>
       <div class="movie-section" v-if="movies.free.length">
@@ -85,6 +87,7 @@
           <p class="movie-title">{{ movie.title }}</p>
         </div>
       </div>
+      <button v-if="freePage < totalPages.free" @click="loadMore('free')" class="btn btn-primary">Cargar más</button>
 
       <h2>Series o TV</h2>
       <div class="movie-section" v-if="movies.series.length">
@@ -93,6 +96,7 @@
           <p class="movie-title">{{ series.name }}</p>
         </div>
       </div>
+      <button v-if="seriesPage < totalPages.series" @click="loadMore('series')" class="btn btn-primary">Cargar más</button>
     </div>
   </div>
 </template>
@@ -111,27 +115,54 @@ const movies = ref({
   free: [],
   series: []
 });
+const trendingPage = ref(1);
+const popularPage = ref(1);
+const freePage = ref(1);
+const seriesPage = ref(1);
+const totalPages = ref({
+  trending: 1,
+  popular: 1,
+  free: 1,
+  series: 1
+});
 
 const router = useRouter();
 
 onMounted(() => {
   username.value = localStorage.getItem('username');
-  fetchMovies('trending', '/trending/movie/day');
-  fetchMovies('popular', '/movie/popular');
-  fetchMovies('free', '/movie/top_rated');
-  fetchMovies('series', '/tv/popular');
+  fetchMovies('trending', '/trending/movie/day', trendingPage.value);
+  fetchMovies('popular', '/movie/popular', popularPage.value);
+  fetchMovies('free', '/movie/top_rated', freePage.value);
+  fetchMovies('series', '/tv/popular', seriesPage.value);
 });
 
-const fetchMovies = (category, endpoint) => {
+const fetchMovies = (category, endpoint, page) => {
   const apiKey = '06524ff7325ce43f515a20c7b39d58a7';
   axios
-    .get(`https://api.themoviedb.org/3${endpoint}?api_key=${apiKey}&language=es`)
+    .get(`https://api.themoviedb.org/3${endpoint}?api_key=${apiKey}&language=es&page=${page}`)
     .then((response) => {
-      movies.value[category] = response.data.results;
+      movies.value[category] = movies.value[category].concat(response.data.results);
+      totalPages.value[category] = response.data.total_pages;
     })
     .catch((error) => {
       console.error('Error al obtener datos de TMDb:', error);
     });
+};
+
+const loadMore = (category) => {
+  if (category === 'trending') {
+    trendingPage.value++;
+    fetchMovies('trending', '/trending/movie/day', trendingPage.value);
+  } else if (category === 'popular') {
+    popularPage.value++;
+    fetchMovies('popular', '/movie/popular', popularPage.value);
+  } else if (category === 'free') {
+    freePage.value++;
+    fetchMovies('free', '/movie/top_rated', freePage.value);
+  } else if (category === 'series') {
+    seriesPage.value++;
+    fetchMovies('series', '/tv/popular', seriesPage.value);
+  }
 };
 
 const searchContent = () => {

@@ -86,7 +86,7 @@ export default {
       userScore: 0,
       minVotes: null,
       keywords: '',
-      limit: 10,
+      limit: 20,
     };
   },
   mounted() {

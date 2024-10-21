@@ -6,6 +6,7 @@ import Categoria from '../views/Categoria.vue';
 import Login from '../views/Login.vue';
 import Authenticated from '../views/Authenticated.vue';
 import DetallesSeries from '../views/DetallesSeries.vue';
+import DetallesTemporada from '../views/DetallesTemporada.vue';
 
 const isAuthenticated = () => {
   return !!localStorage.getItem('sessionId');
@@ -31,6 +32,11 @@ const routes = [
     path: '/detallesserie/:seriesId', 
     name: 'DetallesSeries', 
     component: DetallesSeries 
+  },
+  {
+    path: '/detallesTemporada/', 
+    name: 'DetallesTemporada', 
+    component: DetallesTemporada 
   },
   {
     path: '/categoria', 

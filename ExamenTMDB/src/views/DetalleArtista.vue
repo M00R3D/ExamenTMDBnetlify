@@ -80,6 +80,7 @@
 
 <script>
 import axios from 'axios';
+import { useRoute } from 'vue-router';
 export default {
   data() {
     return {
@@ -89,8 +90,9 @@ export default {
     };
   },
   mounted() {
+    const route = useRoute();
     const params = new URLSearchParams(window.location.search);
-    const artistId = params.get('artistId'); 
+    const artistId = route.query.artistId;
     if (artistId) {
       this.loadArtistDetails(artistId);
     }
